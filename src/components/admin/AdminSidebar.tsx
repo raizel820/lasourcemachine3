@@ -12,6 +12,7 @@ import {
   Briefcase,
   Wrench,
   Handshake,
+  Image,
   MessageSquare,
   Settings,
   ArrowLeft,
@@ -49,6 +50,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'projects', label: 'Projects', icon: Briefcase, href: '/eurl/lasource/projects' },
   { id: 'services', label: 'Services', icon: Wrench, href: '/eurl/lasource/services' },
   { id: 'partners', label: 'Partners', icon: Handshake, href: '/eurl/lasource/partners' },
+  { id: 'gallery', label: 'Gallery', icon: Image, href: '/eurl/lasource/gallery' },
   { id: 'leads', label: 'Leads', icon: MessageSquare, href: '/eurl/lasource/leads' },
   { id: 'settings', label: 'Settings', icon: Settings, href: '/eurl/lasource/settings' },
 ];

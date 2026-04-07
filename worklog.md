@@ -490,3 +490,34 @@ Stage Summary:
 - Image deletion on entity delete was already implemented and verified working
 - Settings logo/favicon/ogImage cleanup on replacement was already implemented and verified
 - New utility functions `getEntityCoverImage()` and `getEntityGallery()` available for reuse
+---
+Task ID: 8
+Agent: main-agent
+Task: Add Gallery section to admin panel to manage all uploaded images
+
+Work Log:
+- Created `/api/gallery` API route with GET (list files), POST (upload), DELETE (delete) handlers
+  - GET scans `public/uploads/` directories recursively, returns file metadata (url, size, type, folder, date)
+  - Supports query params: folder, type, search filtering
+  - Returns stats: total files, images, documents, total size
+  - POST handles multi-file upload with folder selection
+  - DELETE supports bulk deletion by URL array
+- Created admin Gallery page at `/eurl/lasource/gallery/`
+  - Grid view with thumbnails and hover actions (preview, copy URL, delete)
+  - List view with sortable columns (file, folder, type, size, date)
+  - Stats dashboard (total files, images, documents, total size)
+  - Filter by folder, file type, and search query
+  - Multi-select mode with select all, bulk delete
+  - Image preview dialog with URL copy and delete
+  - Delete confirmation dialog
+  - Direct file upload with folder selection
+  - Pagination (24 items per page)
+  - Toggle between grid and list views (floating button)
+  - Follows admin page pattern (AdminAuthGuard wrapper)
+- Added Gallery entry to AdminSidebar with Image icon (between Partners and Leads)
+
+Stage Summary:
+- Full gallery management system built at `/eurl/lasource/gallery`
+- API endpoint at `/api/gallery` handles listing, uploading, and deleting files
+- All uploaded files across all folders visible and manageable from one place
+- Supports multi-file operations (select, bulk delete, multi-upload)
