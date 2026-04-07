@@ -11,13 +11,12 @@ import { RequestQuoteModal } from '@/components/shared/RequestQuoteModal';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
 import { getLocalizedValue, getEntityCoverImage, getEntityGallery } from '@/lib/helpers';
-import type { ProductionLine, Machine } from '@/lib/types';
+import type { ProductionLine } from '@/lib/types';
 
 export function ProductionLineDetailPage() {
-  const { locale, isRTL, currentSlug, setCurrentPage } = useAppStore();
+  const { locale, isRTL, currentSlug, setCurrentPage, setCurrentSlug } = useAppStore();
   const t = getTranslations(locale);
   const [line, setLine] = useState<ProductionLine | null>(null);
-  const [machines, setMachines] = useState<Machine[]>([]);
   const [loading, setLoading] = useState(true);
   const [quoteOpen, setQuoteOpen] = useState(false);
 
@@ -30,19 +29,6 @@ export function ProductionLineDetailPage() {
           const data = await res.json();
           const l = data.data || data.productionLines?.[0] || null;
           setLine(l);
-          if (l) {
-            try {
-              const machineIds = JSON.parse(l.machines);
-              if (Array.isArray(machineIds) && machineIds.length > 0) {
-                const allRes = await fetch('/api/machines?limit=100');
-                if (allRes.ok) {
-                  const allData = await allRes.json();
-                  const all = allData.data || allData.machines || [];
-                  setMachines(all.filter((m: Machine) => machineIds.includes(m.id)));
-                }
-              }
-            } catch { /* machines not valid JSON */ }
-          }
         }
       } finally {
         setLoading(false);
@@ -117,25 +103,28 @@ export function ProductionLineDetailPage() {
             </p>
 
             {/* Included Machines */}
-            {machines.length > 0 && (
+            {line.machines && line.machines.length > 0 && (
               <div className="mb-8">
                 <h2 className="text-xl font-bold mb-4">
                   {locale === 'ar' ? 'الآلات المشمولة' : locale === 'fr' ? 'Machines Incluses' : 'Included Machines'}
                 </h2>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {machines.map((m) => (
-                    <Card key={m.id} className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => { setCurrentSlug(m.slug); setCurrentPage('machine-detail'); }}>
-                      <div className="h-32 bg-muted">
-                        {(() => {
-                          const mImg = getEntityCoverImage(m);
-                          return mImg ? <img src={mImg} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full flex items-center justify-center"><Factory className="h-8 w-8 text-muted-foreground/30" /></div>;
-                        })()}
-                      </div>
-                      <CardContent className="pt-3 px-4">
-                        <h3 className="font-semibold text-sm">{getLocalizedValue(m.name, locale)}</h3>
-                      </CardContent>
-                    </Card>
-                  ))}
+                  {line.machines.map((mpl) => {
+                    const m = mpl.machine;
+                    return (
+                      <Card key={m.id} className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => { setCurrentSlug(m.slug); setCurrentPage('machine-detail'); }}>
+                        <div className="h-32 bg-muted">
+                          {(() => {
+                            const mImg = getEntityCoverImage(m);
+                            return mImg ? <img src={mImg} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full flex items-center justify-center"><Factory className="h-8 w-8 text-muted-foreground/30" /></div>;
+                          })()}
+                        </div>
+                        <CardContent className="pt-3 px-4">
+                          <h3 className="font-semibold text-sm">{getLocalizedValue(m.name, locale)}</h3>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             )}

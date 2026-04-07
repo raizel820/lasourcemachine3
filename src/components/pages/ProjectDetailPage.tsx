@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
-import { getLocalizedValue, formatDate, getEntityCoverImage, getEntityGallery } from '@/lib/helpers';
+import { getLocalizedValue, getEntityCoverImage, getEntityGallery } from '@/lib/helpers';
 import type { Project } from '@/lib/types';
 
 export function ProjectDetailPage() {
@@ -99,17 +99,17 @@ export function ProjectDetailPage() {
             <Badge className={project.status === 'completed' ? 'bg-green-600' : project.status === 'in_progress' ? 'bg-yellow-600' : 'bg-blue-600'}>
               {project.status}
             </Badge>
-            {project.clientName && <Badge variant="outline">{project.clientName}</Badge>}
+            {project.client && <Badge variant="outline">{project.client}</Badge>}
             {project.location && (
               <span className="flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5" />
-                {getLocalizedValue(project.location, locale)}
+                {project.location}
               </span>
             )}
-            {(project.startDate || project.completionDate) && (
+            {project.date && (
               <span className="flex items-center gap-1 text-sm text-muted-foreground">
                 <Calendar className="h-3.5 w-3.5" />
-                {project.completionDate ? formatDate(project.completionDate, locale) : project.startDate ? formatDate(project.startDate, locale) : ''}
+                {project.date}
               </span>
             )}
           </div>

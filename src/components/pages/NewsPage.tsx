@@ -90,9 +90,7 @@ export function NewsPage() {
                         <Newspaper className="h-10 w-10 text-primary/30" />
                       </div>
                     )}
-                    {post.isFeatured && (
-                      <Badge className="absolute top-3 start-3 bg-primary text-primary-foreground">{t.common.featured}</Badge>
-                    )}
+
                   </div>
                   <CardContent className="pt-4 px-5">
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">

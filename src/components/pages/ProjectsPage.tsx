@@ -39,8 +39,8 @@ export function ProjectsPage() {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
     const title = getLocalizedValue(project.title, locale).toLowerCase();
-    const client = (project.clientName || '').toLowerCase();
-    const location = (project.location ? getLocalizedValue(project.location, locale).toLowerCase() : '');
+    const client = (project.client || '').toLowerCase();
+    const location = (project.location || '').toLowerCase();
     return title.includes(q) || client.includes(q) || location.includes(q);
   });
 
@@ -103,8 +103,8 @@ export function ProjectsPage() {
                       {getLocalizedValue(project.title, locale)}
                     </h3>
                     <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
-                      {project.clientName && (
-                        <span>{project.clientName}</span>
+                      {project.client && (
+                        <span>{project.client}</span>
                       )}
                       {project.location && (
                         <span className="flex items-center gap-1">
@@ -113,9 +113,9 @@ export function ProjectsPage() {
                         </span>
                       )}
                     </div>
-                    {project.shortDescription && (
+                    {project.description && (
                       <p className="text-sm text-muted-foreground mb-3">
-                        {truncateText(getLocalizedValue(project.shortDescription, locale), 100)}
+                        {truncateText(getLocalizedValue(project.description, locale), 100)}
                       </p>
                     )}
                     <Button size="sm" variant="outline" className="cursor-pointer">

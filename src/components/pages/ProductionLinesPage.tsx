@@ -39,7 +39,7 @@ export function ProductionLinesPage() {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
     const name = getLocalizedValue(line.name, locale).toLowerCase();
-    const desc = line.shortDescription ? getLocalizedValue(line.shortDescription, locale).toLowerCase() : '';
+    const desc = line.shortDesc ? getLocalizedValue(line.shortDesc, locale).toLowerCase() : '';
     return name.includes(q) || desc.includes(q);
   });
 
@@ -49,7 +49,7 @@ export function ProductionLinesPage() {
   };
 
   const getMachineCount = (line: ProductionLine) => {
-    try { return JSON.parse(line.machines).length; } catch { return 0; }
+    return line.machines?.length || 0;
   };
 
   const BackArrow = isRTL ? ArrowRight : ArrowLeft;
@@ -106,7 +106,7 @@ export function ProductionLinesPage() {
                         </div>
                       );
                     })()}
-                    {line.isFeatured && (
+                    {line.featured && (
                       <Badge className="absolute top-3 start-3 bg-primary text-primary-foreground">{t.common.featured}</Badge>
                     )}
                   </div>
@@ -122,9 +122,9 @@ export function ProductionLinesPage() {
                     <h3 className="font-semibold text-lg leading-tight mb-2 group-hover:text-primary transition-colors">
                       {getLocalizedValue(line.name, locale)}
                     </h3>
-                    {line.shortDescription && (
+                    {line.shortDesc && (
                       <p className="text-sm text-muted-foreground mb-3">
-                        {truncateText(getLocalizedValue(line.shortDescription, locale), 100)}
+                        {truncateText(getLocalizedValue(line.shortDesc, locale), 100)}
                       </p>
                     )}
                     <Button size="sm" variant="outline" className="cursor-pointer">

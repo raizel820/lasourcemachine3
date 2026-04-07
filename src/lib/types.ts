@@ -38,20 +38,31 @@ export interface Machine {
   name: string; // TranslatableString JSON
   slug: string;
   description: string; // TranslatableString JSON
-  shortDescription?: string; // TranslatableString JSON
+  shortDesc?: string; // TranslatableString JSON
   categoryId: string;
   category?: Category;
-  price: number;
+  basePrice?: number;
   currency: Currency;
+  specs?: string; // JSON array of { key, value }
   images: string; // JSON array of image URLs
-  specifications: string; // JSON array of { key: TranslatableString, value: string }
-  features?: string; // TranslatableString JSON (array)
-  status: 'available' | 'sold' | 'reserved' | 'discontinued';
-  isFeatured: boolean;
+  coverImage?: string;
+  pdfUrl?: string;
+  machineType?: string;
+  capacity?: string;
+  featured: boolean;
+  status: string; // 'draft' | 'published'
   order: number;
-  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+/** Machine in a production line (junction) */
+export interface MachineProductionLine {
+  id: string;
+  machineId: string;
+  productionLineId: string;
+  order: number;
+  machine: Machine;
 }
 
 /** Production line (bundle of machines) */
@@ -60,15 +71,13 @@ export interface ProductionLine {
   name: string; // TranslatableString JSON
   slug: string;
   description: string; // TranslatableString JSON
-  shortDescription?: string; // TranslatableString JSON
+  shortDesc?: string; // TranslatableString JSON
   images: string; // JSON array of image URLs
-  machines: string; // JSON array of machine IDs
-  specifications?: string; // JSON
-  capacity?: string; // TranslatableString JSON
-  status: 'available' | 'reserved' | 'sold';
-  isFeatured: boolean;
+  coverImage?: string;
+  machines: MachineProductionLine[]; // relation
+  featured: boolean;
+  status: string; // 'draft' | 'published'
   order: number;
-  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -81,11 +90,11 @@ export interface NewsPost {
   content: string; // TranslatableString JSON
   excerpt?: string; // TranslatableString JSON
   coverImage?: string;
-  images?: string; // JSON array
+  images: string; // JSON array
   author?: string;
-  status: 'published' | 'draft' | 'archived';
-  isFeatured: boolean;
+  status: string; // 'draft' | 'published'
   publishedAt?: Date;
+  order: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -96,19 +105,14 @@ export interface Project {
   title: string; // TranslatableString JSON
   slug: string;
   description: string; // TranslatableString JSON
-  shortDescription?: string; // TranslatableString JSON
-  clientName?: string;
-  location?: string; // TranslatableString JSON
+  content?: string; // TranslatableString JSON
+  client?: string;
+  location?: string;
+  date?: string;
   coverImage?: string;
   images: string; // JSON array
-  machines?: string; // JSON array of machine IDs
-  productionLines?: string; // JSON array of production line IDs
-  startDate?: Date;
-  completionDate?: Date;
-  status: 'completed' | 'in_progress' | 'planning';
-  isFeatured: boolean;
+  status: string; // 'draft' | 'published'
   order: number;
-  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -116,15 +120,13 @@ export interface Project {
 /** Service offering */
 export interface Service {
   id: string;
-  name: string; // TranslatableString JSON
-  slug: string;
+  title: string; // TranslatableString JSON
   description: string; // TranslatableString JSON
-  shortDescription?: string; // TranslatableString JSON
   icon?: string;
   image?: string;
-  features?: string; // JSON array of TranslatableString
+  features?: string; // JSON array
   order: number;
-  isActive: boolean;
+  status: string; // 'draft' | 'published'
   createdAt: Date;
   updatedAt: Date;
 }
@@ -135,10 +137,7 @@ export interface Partner {
   name: string;
   logo?: string;
   website?: string;
-  description?: string; // TranslatableString JSON
-  country?: string;
   order: number;
-  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -149,7 +148,7 @@ export interface FAQ {
   question: string; // TranslatableString JSON
   answer: string; // TranslatableString JSON
   order: number;
-  isActive: boolean;
+  category?: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -106,9 +106,7 @@ export function NewsDetailPage() {
                   {post.author}
                 </span>
               )}
-              {post.isFeatured && (
-                <Badge>{t.common.featured}</Badge>
-              )}
+
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight mb-6">
