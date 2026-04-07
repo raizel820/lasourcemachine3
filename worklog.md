@@ -325,3 +325,28 @@ Stage Summary:
 - Navbar and Footer dynamically render the uploaded company logo
 - Lint passes clean, dev server compiles successfully
 - No breaking changes to existing URL-based image fields (backward compatible)
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix machine detail page to show specifications and PDF catalog download button
+
+Work Log:
+- Investigated MachineDetailPage.tsx: specs parsing logic was already present (lines 93-108) but admin form never populated specs data
+- Investigated AdminMachinesPage.tsx: specs field existed in MachineItem interface but was NOT in FormData, not rendered in form, and not sent in handleSubmit
+- Added specs editor to admin machine form with full FR/EN/AR key translations and value fields
+- Added addSpec/removeSpec/updateSpec handlers for dynamic spec row management
+- Created parseSpecs() function to parse both nested locale format {en:[{key,value}],...} and flat [{key,value}] formats
+- Created buildSpecs() function to output specs in nested locale format for the detail page parser
+- Added specs field to FormData interface and emptyForm defaults
+- Added specs to handleSubmit body so it's saved to the API
+- Added pdfUrl parsing when opening edit form (was already saving, just needed loading)
+- Added PDF Catalog Download button to MachineDetailPage with FileDown icon and localized label (t.machines.downloadSpec)
+- Button only shows when machine.pdfUrl is set
+- Lint passes clean, dev server compiles successfully
+
+Stage Summary:
+- Admin machines form now has a Specifications section with dynamic key-value pairs
+- Each spec supports multilingual keys (EN/FR/AR) and a shared value
+- Machine detail page now shows specs when available (pre-existing parser handles them)
+- Machine detail page now shows a PDF Catalog Download button when pdfUrl is set
+- Both issues resolved: specs display + PDF download button

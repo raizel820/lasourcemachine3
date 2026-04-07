@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight, Factory, Check, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Factory, Check, ExternalLink, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -217,6 +217,19 @@ export function MachineDetailPage() {
                     </CardContent>
                   </Card>
                 </div>
+              )}
+
+              {/* PDF Catalog Download */}
+              {machine.pdfUrl && (
+                <a
+                  href={machine.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 mt-6 px-4 py-2.5 rounded-lg border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors text-sm font-medium"
+                >
+                  <FileDown className="h-4 w-4" />
+                  {t.machines.downloadSpec}
+                </a>
               )}
 
               {/* CTA */}

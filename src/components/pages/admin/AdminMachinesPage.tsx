@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card, CardContent } from '@/components/ui/card';
 import { ImageUpload } from '@/components/ui/image-upload';
 import { ImageGalleryUpload } from '@/components/ui/image-gallery-upload';
 import { getLocalizedValue } from '@/lib/helpers';
@@ -60,6 +61,7 @@ interface MachineItem {
   specs: string | null;
   images: string;
   coverImage: string | null;
+  pdfUrl: string | null;
   basePrice: number | null;
   currency: string;
   featured: boolean;
@@ -73,6 +75,13 @@ interface Category {
   id: string;
   name: string;
   slug: string;
+}
+
+interface SpecItem {
+  key_en: string;
+  key_fr: string;
+  key_ar: string;
+  value: string;
 }
 
 interface FormData {
@@ -94,6 +103,7 @@ interface FormData {
   images: string[];
   coverImage: string;
   pdfUrl: string;
+  specs: SpecItem[];
   status: string;
   featured: boolean;
   order: number;
@@ -118,6 +128,7 @@ const emptyForm: FormData = {
   images: [],
   coverImage: '',
   pdfUrl: '',
+  specs: [],
   status: 'draft',
   featured: false,
   order: 0,
@@ -135,6 +146,53 @@ function parseJsonField(value: string | null): Record<string, string> {
 
 function buildJsonField(obj: Record<string, string>): string {
   return JSON.stringify(obj);
+}
+
+/** Parse the specs JSON into flat SpecItem[] for the form */
+function parseSpecs(specsJson: string | null): SpecItem[] {
+  if (!specsJson) return [];
+  try {
+    const parsed = JSON.parse(specsJson);
+    if (!parsed) return [];
+
+    // Nested locale format: {en: [{key, value}], fr: [...], ar: [...]}
+    if (parsed.en && Array.isArray(parsed.en)) {
+      return parsed.en.map((item: { key?: string; value?: string }, i: number) => ({
+        key_en: item.key || '',
+        key_fr: parsed.fr?.[i]?.key || '',
+        key_ar: parsed.ar?.[i]?.key || '',
+        value: item.value || '',
+      }));
+    }
+
+    // Flat format: [{key, value}] — key may be a JSON locale string
+    if (Array.isArray(parsed)) {
+      return parsed.map((item: { key?: string; value?: string }) => {
+        const keyObj = parseJsonField(item.key || null);
+        return {
+          key_en: typeof item.key === 'string' && item.key.startsWith('{') ? keyObj.en || '' : (item.key || ''),
+          key_fr: typeof item.key === 'string' && item.key.startsWith('{') ? keyObj.fr || '' : (item.key || ''),
+          key_ar: typeof item.key === 'string' && item.key.startsWith('{') ? keyObj.ar || '' : (item.key || ''),
+          value: item.value || '',
+        };
+      });
+    }
+
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/** Build the specs JSON from form data (nested locale format) */
+function buildSpecs(specs: SpecItem[]): string {
+  if (specs.length === 0) return '[]';
+  const result = {
+    en: specs.filter(s => s.key_en || s.value).map(s => ({ key: s.key_en, value: s.value })),
+    fr: specs.filter(s => s.key_fr || s.value).map(s => ({ key: s.key_fr, value: s.value })),
+    ar: specs.filter(s => s.key_ar || s.value).map(s => ({ key: s.key_ar, value: s.value })),
+  };
+  return JSON.stringify(result);
 }
 
 export function AdminMachinesPage() {
@@ -202,9 +260,8 @@ export function AdminMachinesPage() {
         try { return JSON.parse(item.images || '[]'); } catch { return []; }
       })(),
       coverImage: item.coverImage || '',
-      pdfUrl: (() => {
-        try { return item.pdfUrl || ''; } catch { return ''; }
-      })(),
+      pdfUrl: item.pdfUrl || '',
+      specs: parseSpecs(item.specs),
       status: item.status,
       featured: item.featured,
       order: item.order,
@@ -236,6 +293,7 @@ export function AdminMachinesPage() {
         images: JSON.stringify(form.images),
         coverImage: form.coverImage || null,
         pdfUrl: form.pdfUrl || null,
+        specs: buildSpecs(form.specs),
         status: form.status,
         featured: form.featured,
         order: form.order,
@@ -308,8 +366,29 @@ export function AdminMachinesPage() {
     return name.includes(search.toLowerCase());
   });
 
-  const updateForm = (key: keyof FormData, value: string | boolean | number) => {
+  const updateForm = (key: keyof FormData, value: string | boolean | number | SpecItem[]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const addSpec = () => {
+    setForm((prev) => ({
+      ...prev,
+      specs: [...prev.specs, { key_en: '', key_fr: '', key_ar: '', value: '' }],
+    }));
+  };
+
+  const removeSpec = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      specs: prev.specs.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateSpec = (index: number, field: keyof SpecItem, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      specs: prev.specs.map((s, i) => (i === index ? { ...s, [field]: value } : s)),
+    }));
   };
 
   return (
@@ -574,6 +653,79 @@ export function AdminMachinesPage() {
                   View PDF Catalog
                 </a>
               )}
+
+              {/* Specifications */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label>Specifications</Label>
+                  <Button type="button" variant="outline" size="sm" onClick={addSpec} className="cursor-pointer">
+                    <Plus className="h-3 w-3 mr-1" /> Add Spec
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Add key-value specifications (e.g., &quot;Weight&quot;: &quot;500kg&quot;). Keys support FR/EN/AR translations.
+                </p>
+
+                {form.specs.length > 0 && (
+                  <Card>
+                    <CardContent className="p-0">
+                      <div className="divide-y">
+                        <div className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2 px-3 py-2 bg-muted/50 text-xs font-medium text-muted-foreground">
+                          <span>Key (EN)</span>
+                          <span>Key (FR)</span>
+                          <span>Key (AR)</span>
+                          <span>Value</span>
+                          <span className="w-8"></span>
+                        </div>
+                        {form.specs.map((spec, i) => (
+                          <div key={i} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2 px-3 py-2 items-center">
+                            <Input
+                              value={spec.key_en}
+                              onChange={(e) => updateSpec(i, 'key_en', e.target.value)}
+                              placeholder="Key in English"
+                              className="h-8 text-sm"
+                            />
+                            <Input
+                              value={spec.key_fr}
+                              onChange={(e) => updateSpec(i, 'key_fr', e.target.value)}
+                              placeholder="Clé en français"
+                              className="h-8 text-sm"
+                            />
+                            <Input
+                              value={spec.key_ar}
+                              onChange={(e) => updateSpec(i, 'key_ar', e.target.value)}
+                              placeholder="المفتاح"
+                              className="h-8 text-sm"
+                              dir="rtl"
+                            />
+                            <Input
+                              value={spec.value}
+                              onChange={(e) => updateSpec(i, 'value', e.target.value)}
+                              placeholder="Value"
+                              className="h-8 text-sm"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 shrink-0 cursor-pointer text-destructive hover:text-destructive"
+                              onClick={() => removeSpec(i)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {form.specs.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-3 border border-dashed rounded-md">
+                    No specifications added yet
+                  </p>
+                )}
+              </div>
 
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
