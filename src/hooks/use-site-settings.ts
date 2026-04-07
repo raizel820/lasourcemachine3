@@ -119,6 +119,16 @@ export function useSiteSettings() {
     return () => { cancelled = true; };
   }, [localVersion]);
 
+  // Helper: parse a JSON field (e.g. `{"en":"...","fr":"...","ar":"..."}`) into locale value
+  const parseJsonLocale = useCallback((jsonStr: string | undefined, locale: Locale): string => {
+    if (!jsonStr) return '';
+    try {
+      const obj = JSON.parse(jsonStr);
+      if (typeof obj === 'object' && obj !== null) return obj[locale] || '';
+    } catch { /* not JSON */ }
+    return jsonStr; // return as plain string if not JSON
+  }, []);
+
   const get = useCallback((key: string, fallback: string): string => {
     if (settings && settings[key]) return settings[key];
     return fallback;
@@ -134,27 +144,66 @@ export function useSiteSettings() {
     loaded,
     get,
     stats: { years: statsYears, machines: statsMachines, clients: statsClients, countries: statsCountries },
-    phone: settings?.company_phone || COMPANY.phone,
-    email: settings?.company_email || COMPANY.email,
-    whatsapp: settings?.company_whatsapp || COMPANY.whatsapp,
-    address: settings?.company_address || COMPANY.address,
+    phone: settings?.company_phone || settings?.contact_phone || COMPANY.phone,
+    email: settings?.company_email || settings?.contact_email || COMPANY.email,
+    whatsapp: settings?.company_whatsapp || settings?.contact_whatsapp || COMPANY.whatsapp,
+    address: settings?.company_address || settings?.contact_address || COMPANY.address,
     website: settings?.company_website || COMPANY.website,
     facebook: settings?.social_facebook || COMPANY.facebook,
     linkedin: settings?.social_linkedin || COMPANY.linkedin,
     companyName: useCallback((locale: Locale) => {
-      if (locale === 'ar') return settings?.company_name_ar || COMPANY.nameAr;
-      if (locale === 'en') return settings?.company_name_en || COMPANY.name;
-      return settings?.company_name_fr || COMPANY.name;
-    }, [settings]),
+      // Priority: separate locale key > JSON format > COMPANY constant
+      const sep = locale === 'ar' ? settings?.company_name_ar
+        : locale === 'en' ? settings?.company_name_en
+        : settings?.company_name_fr;
+      if (sep) return sep;
+      const fromJson = parseJsonLocale(settings?.company_name, locale);
+      if (fromJson) return fromJson;
+      return locale === 'ar' ? COMPANY.nameAr : COMPANY.name;
+    }, [settings, parseJsonLocale]),
     description: useCallback((locale: Locale) => {
-      if (locale === 'ar') return settings?.company_description_ar || COMPANY.description.ar;
-      if (locale === 'en') return settings?.company_description_en || COMPANY.description.en;
-      return settings?.company_description_fr || COMPANY.description.fr;
-    }, [settings]),
+      // Priority: separate locale key > JSON format > COMPANY constant
+      const sep = locale === 'ar' ? settings?.company_description_ar
+        : locale === 'en' ? settings?.company_description_en
+        : settings?.company_description_fr;
+      if (sep) return sep;
+      const fromJson = parseJsonLocale(settings?.company_description, locale);
+      if (fromJson) return fromJson;
+      return locale === 'ar' ? COMPANY.description.ar
+        : locale === 'en' ? COMPANY.description.en
+        : COMPANY.description.fr;
+    }, [settings, parseJsonLocale]),
     workingHours: useCallback((locale: Locale) => {
-      if (locale === 'ar') return settings?.working_hours_ar || COMPANY.workingHours.ar;
-      if (locale === 'en') return settings?.working_hours_en || COMPANY.workingHours.en;
-      return settings?.working_hours_fr || COMPANY.workingHours.fr;
-    }, [settings]),
+      // Priority: separate locale key > JSON format > COMPANY constant
+      const sep = locale === 'ar' ? settings?.working_hours_ar
+        : locale === 'en' ? settings?.working_hours_en
+        : settings?.working_hours_fr;
+      if (sep) return sep;
+      const fromJson = parseJsonLocale(settings?.working_hours, locale);
+      if (fromJson) return fromJson;
+      return locale === 'ar' ? COMPANY.workingHours.ar
+        : locale === 'en' ? COMPANY.workingHours.en
+        : COMPANY.workingHours.fr;
+    }, [settings, parseJsonLocale]),
+    // SEO helpers
+    seoTitle: useCallback((locale: Locale) => {
+      const sep = locale === 'ar' ? settings?.seo_title_ar
+        : locale === 'en' ? settings?.seo_title_en
+        : settings?.seo_title_fr;
+      if (sep) return sep;
+      const fromJson = parseJsonLocale(settings?.meta_title, locale);
+      if (fromJson) return fromJson;
+      return COMPANY.name;
+    }, [settings, parseJsonLocale]),
+    seoDescription: useCallback((locale: Locale) => {
+      const sep = locale === 'ar' ? settings?.seo_description_ar
+        : locale === 'en' ? settings?.seo_description_en
+        : settings?.seo_description_fr;
+      if (sep) return sep;
+      const fromJson = parseJsonLocale(settings?.meta_description, locale);
+      if (fromJson) return fromJson;
+      return '';
+    }, [settings, parseJsonLocale]),
+    seoOgImage: settings?.seo_og_image || '',
   };
 }

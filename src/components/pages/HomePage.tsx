@@ -13,7 +13,6 @@ import { getTranslations } from '@/lib/i18n';
 import { useSiteSettings } from '@/hooks/use-site-settings';
 import { getLocalizedValue, getLocalizedArray, formatDate, truncateText } from '@/lib/helpers';
 import { formatPrice, convertPrice } from '@/lib/currency';
-import { COMPANY } from '@/lib/constants';
 import type { Machine, Category, Service, NewsPost, Partner } from '@/lib/types';
 
 type AnyRecord = any;
@@ -156,10 +155,10 @@ export function HomePage() {
             {locale === 'ar' ? '📍 الجزائر' : locale === 'fr' ? '📍 Algérie' : '📍 Algeria'}
           </Badge>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl max-w-4xl mx-auto">
-            {t.hero.title}
+            {site.companyName(locale as any)}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            {t.hero.subtitle}
+            {site.description(locale as any)}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Button

@@ -237,3 +237,32 @@ Stage Summary:
 - Admin production lines, projects, and services pages also fixed
 - Public pages continue to show only published items (default status='published')
 - Lint passes cleanly, dev server compiles successfully
+
+---
+Task ID: 15
+Agent: main-agent
+Task: Fix homepage not fetching data from admin panel settings
+
+Work Log:
+- **Root cause identified**: Two interconnected issues preventing homepage from using admin settings:
+  1. **Settings key format mismatch**: The seed script stored data in JSON format (`company_description: {"en":"...","fr":"...","ar":"..."}`) but the `useSiteSettings` hook only read separate keys (`company_description_fr`, `company_description_en`, `company_description_ar`) which were all empty — so it always fell back to hardcoded COMPANY constants.
+  2. **Homepage hero used i18n translations**: The hero section title and subtitle came from `getTranslations(locale)` (hardcoded i18n file) instead of from `useSiteSettings()` admin data.
+- **Fixed `useSiteSettings` hook** (`src/hooks/use-site-settings.ts`):
+  - Added `parseJsonLocale()` helper that tries to parse a string as JSON and extract the locale value, falling back to plain string
+  - Updated `companyName(locale)` — Priority: separate locale key > JSON field > COMPANY constant
+  - Updated `description(locale)` — same 3-tier fallback chain
+  - Updated `workingHours(locale)` — same 3-tier fallback chain
+  - Added `seoTitle(locale)` and `seoDescription(locale)` with same pattern + `seoOgImage` property
+  - Added `contact_phone` and `contact_email` as fallback keys for phone/email
+- **Fixed HomePage** (`src/components/pages/HomePage.tsx`):
+  - Hero `<h1>` now uses `site.companyName(locale)` instead of `t.hero.title`
+  - Hero `<p>` now uses `site.description(locale)` instead of `t.hero.subtitle`
+  - Removed unused `COMPANY` import
+- **Verified all other pages**: Navbar, Footer, AboutPage, ContactPage all already use `useSiteSettings()` correctly
+
+Stage Summary:
+- Homepage now displays company name, description, stats, and all contact info from admin panel settings
+- Settings changes in admin propagate immediately to homepage via reactive cache invalidation
+- JSON-format seed data (from initial seeding) now properly parsed as fallback when separate locale keys are empty
+- Both old format (JSON fields) and new format (separate locale keys) are supported
+- Lint passes cleanly, dev server compiles with no errors
