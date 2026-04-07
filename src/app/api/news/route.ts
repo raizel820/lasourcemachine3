@@ -15,7 +15,11 @@ export async function GET(req: NextRequest) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '12', 10)))
     const skip = (page - 1) * limit
 
-    const where = { status: 'published' as const }
+    // Support status filtering: default to 'published' for public, 'all' for admin
+    const statusParam = searchParams.get('status')
+    const where: Record<string, unknown> = statusParam && statusParam !== 'published'
+      ? (statusParam === 'all' ? {} : { status: statusParam })
+      : { status: 'published' }
 
     const [newsPosts, total] = await Promise.all([
       db.newsPost.findMany({

@@ -25,6 +25,7 @@ import { getTranslations } from '@/lib/i18n';
 import { COMPANY } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import type { Locale } from '@/lib/types';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 /** Map nav keys to page identifiers used in the store */
 const NAV_LINKS = [
@@ -70,7 +71,8 @@ export function Navbar() {
     setMobileOpen(false);
   }, [setCurrentPage]);
 
-  const companyName = locale === 'ar' ? COMPANY.nameAr : COMPANY.name;
+  const site = useSiteSettings();
+  const companyName = site.companyName(locale);
 
   return (
     <>
@@ -79,22 +81,22 @@ export function Navbar() {
         <div className="container mx-auto flex items-center justify-between px-4 h-9">
           <div className="flex items-center gap-4">
             <a
-              href={`tel:${COMPANY.phone}`}
+              href={`tel:${site.phone}`}
               className="flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
               <Phone className="h-3 w-3" />
-              <span>{COMPANY.phone}</span>
+              <span>{site.phone}</span>
             </a>
             <a
-              href={`mailto:${COMPANY.email}`}
+              href={`mailto:${site.email}`}
               className="flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
               <Mail className="h-3 w-3" />
-              <span>{COMPANY.email}</span>
+              <span>{site.email}</span>
             </a>
           </div>
           <div className="flex items-center gap-2">
-            <span>{COMPANY.workingHours[locale]}</span>
+            <span>{site.workingHours(locale)}</span>
           </div>
         </div>
       </div>
@@ -261,18 +263,18 @@ export function Navbar() {
           {/* Contact info in mobile */}
           <div className="mt-6 space-y-3 text-sm text-muted-foreground">
             <a
-              href={`tel:${COMPANY.phone}`}
+              href={`tel:${site.phone}`}
               className="flex items-center gap-2 hover:text-foreground transition-colors"
             >
               <Phone className="h-4 w-4" />
-              <span>{COMPANY.phone}</span>
+              <span>{site.phone}</span>
             </a>
             <a
-              href={`mailto:${COMPANY.email}`}
+              href={`mailto:${site.email}`}
               className="flex items-center gap-2 hover:text-foreground transition-colors"
             >
               <Mail className="h-4 w-4" />
-              <span>{COMPANY.email}</span>
+              <span>{site.email}</span>
             </a>
           </div>
         </SheetContent>

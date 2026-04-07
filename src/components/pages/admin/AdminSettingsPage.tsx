@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { invalidateSettingsCache } from '@/hooks/use-site-settings';
 
 const ADMIN_HEADERS = { Authorization: 'Bearer admin-token' };
 
@@ -85,6 +86,8 @@ export function AdminSettingsPage() {
       });
       if (res.ok) {
         toast.success('Settings saved successfully');
+        // Invalidate cache so all pages immediately use new settings
+        invalidateSettingsCache();
       } else {
         const data = await res.json();
         toast.error(data.error || 'Failed to save settings');

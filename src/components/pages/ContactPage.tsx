@@ -12,6 +12,7 @@ import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
 import { COMPANY } from '@/lib/constants';
 import { getGoogleMapsEmbedUrl } from '@/lib/helpers';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 export function ContactPage() {
   const { locale, setCurrentPage } = useAppStore();
@@ -54,12 +55,14 @@ export function ContactPage() {
     }
   };
 
+  const site = useSiteSettings();
+
   const contactInfo = [
-    { icon: Phone, label: locale === 'ar' ? 'الهاتف' : locale === 'fr' ? 'Téléphone' : 'Phone', value: COMPANY.phone, href: `tel:${COMPANY.phone}` },
-    { icon: Mail, label: 'Email', value: COMPANY.email, href: `mailto:${COMPANY.email}` },
-    { icon: MapPin, label: locale === 'ar' ? 'العنوان' : locale === 'fr' ? 'Adresse' : 'Address', value: COMPANY.address, href: `https://maps.google.com/?q=${encodeURIComponent(COMPANY.address)}` },
-    { icon: Clock, label: locale === 'ar' ? 'ساعات العمل' : locale === 'fr' ? 'Heures de travail' : 'Working Hours', value: COMPANY.workingHours[locale] },
-    { icon: MessageCircle, label: 'WhatsApp', value: COMPANY.whatsapp, href: `https://wa.me/${COMPANY.whatsapp.replace(/\D/g, '')}` },
+    { icon: Phone, label: locale === 'ar' ? 'الهاتف' : locale === 'fr' ? 'Téléphone' : 'Phone', value: site.phone, href: `tel:${site.phone}` },
+    { icon: Mail, label: 'Email', value: site.email, href: `mailto:${site.email}` },
+    { icon: MapPin, label: locale === 'ar' ? 'العنوان' : locale === 'fr' ? 'Adresse' : 'Address', value: site.address, href: `https://maps.google.com/?q=${encodeURIComponent(site.address)}` },
+    { icon: Clock, label: locale === 'ar' ? 'ساعات العمل' : locale === 'fr' ? 'Heures de travail' : 'Working Hours', value: site.workingHours(locale) },
+    { icon: MessageCircle, label: 'WhatsApp', value: site.whatsapp, href: `https://wa.me/${site.whatsapp.replace(/\D/g, '')}` },
   ];
 
   return (

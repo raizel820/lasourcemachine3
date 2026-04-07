@@ -5,6 +5,7 @@ import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
 import { COMPANY } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 
 /** Navigation links for the footer */
 const FOOTER_LINKS = [
@@ -22,8 +23,9 @@ const FOOTER_LINKS = [
 export function Footer() {
   const { locale, isRTL, setCurrentPage } = useAppStore();
   const t = getTranslations(locale);
+  const site = useSiteSettings();
 
-  const companyName = locale === 'ar' ? COMPANY.nameAr : COMPANY.name;
+  const companyName = site.companyName(locale);
   const currentYear = new Date().getFullYear();
 
   const handleNavigate = (page: string) => {
@@ -54,7 +56,7 @@ export function Footer() {
             {/* Social Links */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href={COMPANY.facebook}
+                href={site.facebook || COMPANY.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition-colors hover:bg-primary hover:text-primary-foreground"
@@ -65,7 +67,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href={`https://wa.me/${COMPANY.whatsapp.replace(/\D/g, '')}`}
+                href={`https://wa.me/${site.whatsapp.replace(/\D/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition-colors hover:bg-[#25D366] hover:text-white"
@@ -76,7 +78,7 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href={COMPANY.linkedin}
+                href={site.linkedin || COMPANY.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-slate-400 transition-colors hover:bg-[#0077B5] hover:text-white"
@@ -119,12 +121,12 @@ export function Footer() {
             <ul className="space-y-4">
               <li>
                 <a
-                  href={`tel:${COMPANY.phone}`}
+                  href={`tel:${site.phone}`}
                   className="flex items-start gap-3 text-sm text-slate-400 transition-colors hover:text-white"
                 >
                   <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <div>
-                    <p className="font-medium text-slate-300">{COMPANY.phone}</p>
+                    <p className="font-medium text-slate-300">{site.phone}</p>
                     <p className="text-xs text-slate-500 mt-0.5">
                       {locale === 'ar' ? 'هاتف' : locale === 'fr' ? 'Téléphone' : 'Phone'}
                     </p>
@@ -133,12 +135,12 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href={`mailto:${COMPANY.email}`}
+                  href={`mailto:${site.email}`}
                   className="flex items-start gap-3 text-sm text-slate-400 transition-colors hover:text-white"
                 >
                   <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <div>
-                    <p className="font-medium text-slate-300">{COMPANY.email}</p>
+                    <p className="font-medium text-slate-300">{site.email}</p>
                     <p className="text-xs text-slate-500 mt-0.5">Email</p>
                   </div>
                 </a>
@@ -146,7 +148,7 @@ export function Footer() {
               <li className="flex items-start gap-3 text-sm text-slate-400">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <div>
-                  <p className="font-medium text-slate-300">{COMPANY.address}</p>
+                  <p className="font-medium text-slate-300">{site.address}</p>
                   <p className="text-xs text-slate-500 mt-0.5">
                     {locale === 'ar' ? 'العنوان' : locale === 'fr' ? 'Adresse' : 'Address'}
                   </p>
@@ -155,7 +157,7 @@ export function Footer() {
               <li className="flex items-start gap-3 text-sm text-slate-400">
                 <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <div>
-                  <p className="font-medium text-slate-300">{COMPANY.workingHours[locale]}</p>
+                  <p className="font-medium text-slate-300">{site.workingHours(locale)}</p>
                   <p className="text-xs text-slate-500 mt-0.5">
                     {locale === 'ar' ? 'ساعات العمل' : locale === 'fr' ? 'Heures de travail' : 'Working Hours'}
                   </p>
@@ -171,11 +173,11 @@ export function Footer() {
             </h3>
             <div className="rounded-lg bg-slate-800/50 border border-slate-700/50 p-4 space-y-3">
               <p className="text-sm text-slate-400 leading-relaxed">
-                {COMPANY.description[locale]}
+                {site.description(locale)}
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-primary" />
-                <span className="text-slate-300">{COMPANY.workingHours[locale]}</span>
+                <span className="text-slate-300">{site.workingHours(locale)}</span>
               </div>
               <div className="pt-2">
                 <button

@@ -1,14 +1,15 @@
 'use client';
 
 import { MessageCircle } from 'lucide-react';
-import { COMPANY } from '@/lib/constants';
 import { useAppStore } from '@/lib/store';
+import { useSiteSettings } from '@/hooks/use-site-settings';
 import { cn } from '@/lib/utils';
 
 export function WhatsAppButton() {
   const { isRTL } = useAppStore();
+  const { whatsapp } = useSiteSettings();
 
-  const whatsappUrl = `https://wa.me/${COMPANY.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(
+  const whatsappUrl = `https://wa.me/${whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(
     'Hello! I am interested in your industrial machinery. Can you help me?'
   )}`;
 
