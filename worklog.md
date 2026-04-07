@@ -350,3 +350,29 @@ Stage Summary:
 - Machine detail page now shows specs when available (pre-existing parser handles them)
 - Machine detail page now shows a PDF Catalog Download button when pdfUrl is set
 - Both issues resolved: specs display + PDF download button
+---
+Task ID: 3
+Agent: Main Agent
+Task: Add machine type, category, and capacity display to machine detail page
+
+Work Log:
+- Identified that `machineType`, `capacity`, and `category` fields exist in Prisma schema and are saved by admin form but were NOT rendered on the public machine detail page
+- Category was shown as a small badge but machine type and capacity were completely absent
+- Added i18n translations for `machineType`, `capacity`, `category`, `downloadCatalog`, and `noSpecs` in EN/FR/AR
+- Updated MachineDetailPage.tsx with a new "Quick Info" section showing 3 info cards:
+  - Machine Type (with Settings2 icon)
+  - Capacity (with Gauge icon)
+  - Category (with Tag icon)
+- Quick info cards only render when the field has a value (conditional rendering)
+- Each card has an icon, label, and value in a compact horizontal layout with primary color accent
+- Enhanced PDF download button with larger size, ExternalLink icon, and "Download Catalog" translation
+- Added "No specifications available" fallback message when specs array is empty
+- Kept existing category badge at the top (quick info section provides more prominent display below)
+- Lint passes clean, dev server compiles successfully
+
+Stage Summary:
+- Machine detail page now prominently displays machine type, capacity, and category in a dedicated info section
+- Each field shown in a styled card with icon and localized label
+- PDF catalog download button enhanced with better styling and icon
+- Specs section shows proper empty state message when no specs are configured
+- All new translations added in EN, FR, and AR

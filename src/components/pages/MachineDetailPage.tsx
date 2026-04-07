@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ArrowRight, Factory, Check, ExternalLink, FileDown } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Factory, Check, ExternalLink, FileDown, Settings2, Gauge, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -109,6 +109,30 @@ export function MachineDetailPage() {
   const features = machine.features ? getLocalizedArray(machine.features, locale) : [];
   const BackArrow = isRTL ? ArrowRight : ArrowLeft;
 
+  // Build quick info items from machine fields
+  const quickInfo: Array<{ icon: React.ReactNode; label: string; value: string }> = [];
+  if (machine.machineType) {
+    quickInfo.push({
+      icon: <Settings2 className="h-4 w-4 text-primary" />,
+      label: t.machines.machineType,
+      value: machine.machineType,
+    });
+  }
+  if (machine.capacity) {
+    quickInfo.push({
+      icon: <Gauge className="h-4 w-4 text-primary" />,
+      label: t.machines.capacity,
+      value: machine.capacity,
+    });
+  }
+  if (machine.category) {
+    quickInfo.push({
+      icon: <Tag className="h-4 w-4 text-primary" />,
+      label: t.machines.category,
+      value: getLocalizedValue(machine.category.name, locale),
+    });
+  }
+
   return (
     <>
       <div className="py-8">
@@ -154,6 +178,7 @@ export function MachineDetailPage() {
 
             {/* Info */}
             <div>
+              {/* Category Badge */}
               {machine.category && (
                 <Badge variant="secondary" className="mb-3">
                   {getLocalizedValue(machine.category.name, locale)}
@@ -170,6 +195,25 @@ export function MachineDetailPage() {
                   {machine.status}
                 </Badge>
               </div>
+
+              {/* Quick Info: Machine Type, Capacity, Category */}
+              {quickInfo.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                  {quickInfo.map((info, i) => (
+                    <Card key={i} className="border-primary/10 bg-primary/5">
+                      <CardContent className="flex items-center gap-3 p-3">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 shrink-0">
+                          {info.icon}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs text-muted-foreground truncate">{info.label}</p>
+                          <p className="text-sm font-semibold truncate">{info.value}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
 
               <Separator className="my-6" />
 
@@ -201,9 +245,9 @@ export function MachineDetailPage() {
               )}
 
               {/* Specifications */}
-              {specs.length > 0 && (
-                <div className="mt-6">
-                  <h2 className="font-semibold text-lg mb-3">{t.machines.specs}</h2>
+              <div className="mt-6">
+                <h2 className="font-semibold text-lg mb-3">{t.machines.specs}</h2>
+                {specs.length > 0 ? (
                   <Card>
                     <CardContent className="p-0">
                       <div className="divide-y">
@@ -216,20 +260,25 @@ export function MachineDetailPage() {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm text-muted-foreground">{t.machines.noSpecs}</p>
+                )}
+              </div>
 
               {/* PDF Catalog Download */}
               {machine.pdfUrl && (
-                <a
-                  href={machine.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 mt-6 px-4 py-2.5 rounded-lg border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors text-sm font-medium"
-                >
-                  <FileDown className="h-4 w-4" />
-                  {t.machines.downloadSpec}
-                </a>
+                <div className="mt-6">
+                  <a
+                    href={machine.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-colors text-sm font-medium cursor-pointer"
+                  >
+                    <FileDown className="h-5 w-5" />
+                    <span>{t.machines.downloadCatalog}</span>
+                    <ExternalLink className="h-3.5 w-3.5 opacity-50" />
+                  </a>
+                </div>
               )}
 
               {/* CTA */}
