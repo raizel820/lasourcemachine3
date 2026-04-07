@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { SectionHeader } from '@/components/shared/SectionHeader';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
-import { getLocalizedValue, getLocalizedArray } from '@/lib/helpers';
+import { getLocalizedValue, getLocalizedArray, getEntityCoverImage } from '@/lib/helpers';
 import type { Service } from '@/lib/types';
 
 export function ServicesPage() {
@@ -66,20 +66,25 @@ export function ServicesPage() {
                 const name = getLocalizedValue(service.title || service.name, locale);
                 const desc = getLocalizedValue(service.description, locale);
                 const features = getLocalizedArray(service.features || '', locale);
+                const serviceImg = getEntityCoverImage(service);
 
                 return (
                   <Card key={service.id} className="overflow-hidden">
                     <div className={`grid grid-cols-1 lg:grid-cols-2 ${isReversed ? 'lg:grid-flow-dense' : ''}`}>
                       {/* Icon / Visual */}
                       <div className={`flex items-center justify-center p-8 lg:p-12 ${isReversed ? 'lg:col-start-2' : ''} bg-gradient-to-br from-primary/5 to-primary/10`}>
-                        <div className="text-center">
-                          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 text-primary mx-auto mb-4">
-                            <Icon className="h-10 w-10" />
+                        {serviceImg ? (
+                          <img src={serviceImg} alt={name} className="w-full h-full object-contain rounded-xl" style={{ maxHeight: '280px' }} />
+                        ) : (
+                          <div className="text-center">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 text-primary mx-auto mb-4">
+                              <Icon className="h-10 w-10" />
+                            </div>
+                            <Badge variant="secondary" className="mb-2">
+                              {String(i + 1).padStart(2, '0')}
+                            </Badge>
                           </div>
-                          <Badge variant="secondary" className="mb-2">
-                            {String(i + 1).padStart(2, '0')}
-                          </Badge>
-                        </div>
+                        )}
                       </div>
                       {/* Content */}
                       <div className="p-8 lg:p-12 flex flex-col justify-center">

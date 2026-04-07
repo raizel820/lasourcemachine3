@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { RequestQuoteModal } from '@/components/shared/RequestQuoteModal';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
-import { getLocalizedValue, getLocalizedArray } from '@/lib/helpers';
+import { getLocalizedValue, getLocalizedArray, getEntityGallery } from '@/lib/helpers';
 import { formatPrice, convertPrice } from '@/lib/currency';
 type AnyRecord = any;
 
@@ -87,9 +87,7 @@ export function MachineDetailPage() {
     );
   }
 
-  const images: string[] = (() => {
-    try { return JSON.parse(machine.images); } catch { return []; }
-  })();
+  const images: string[] = getEntityGallery(machine);
   const specs: Array<{ key: string; value: string }> = (() => {
     try {
       const raw = machine.specs || machine.specifications;
@@ -301,12 +299,15 @@ export function MachineDetailPage() {
                 {relatedMachines.map((rm: AnyRecord) => {
                   const rmPrice = rm.basePrice || rm.price || 0;
                   const rmCurrency = rm.currency || 'DZD';
+                  const rmImg = getEntityGallery(rm)[0];
                   return (
                     <Card key={rm.id} className="group overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => { setCurrentSlug(rm.slug); window.scrollTo(0, 0); }}>
                       <div className="h-40 overflow-hidden bg-muted">
-                        {(() => {
-                          try { const imgs = JSON.parse(rm.images); return imgs[0] ? <img src={imgs[0]} alt="" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" /> : null; } catch { return null; }
-                        })() || <div className="h-full w-full flex items-center justify-center"><Factory className="h-10 w-10 text-muted-foreground/30" /></div>}
+                        {rmImg ? (
+                          <img src={rmImg} alt="" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center"><Factory className="h-10 w-10 text-muted-foreground/30" /></div>
+                        )}
                       </div>
                       <CardContent className="pt-3 px-4">
                         <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">

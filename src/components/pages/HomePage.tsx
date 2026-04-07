@@ -11,7 +11,7 @@ import { RequestQuoteModal } from '@/components/shared/RequestQuoteModal';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
 import { useSiteSettings } from '@/hooks/use-site-settings';
-import { getLocalizedValue, getLocalizedArray, formatDate, truncateText } from '@/lib/helpers';
+import { getLocalizedValue, getLocalizedArray, formatDate, truncateText, getEntityCoverImage } from '@/lib/helpers';
 import { formatPrice, convertPrice } from '@/lib/currency';
 import type { Machine, Category, Service, NewsPost, Partner } from '@/lib/types';
 
@@ -210,22 +210,14 @@ export function HomePage() {
               {machines.slice(0, 6).map((machine) => (
                 <Card key={machine.id} className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => handleViewMachine(machine)}>
                   <div className="relative overflow-hidden rounded-t-xl">
-                    {machine.images ? (
-                      (() => {
-                        try {
-                          const imgs = JSON.parse(machine.images);
-                          return imgs[0] ? (
-                            <img src={imgs[0]} alt={getLocalizedValue(machine.name, locale)} className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                          ) : (
-                            <div className="h-52 w-full bg-muted flex items-center justify-center"><Factory className="h-12 w-12 text-muted-foreground" /></div>
-                          );
-                        } catch {
-                          return <div className="h-52 w-full bg-muted flex items-center justify-center"><Factory className="h-12 w-12 text-muted-foreground" /></div>;
-                        }
-                      })()
-                    ) : (
-                      <div className="h-52 w-full bg-muted flex items-center justify-center"><Factory className="h-12 w-12 text-muted-foreground" /></div>
-                    )}
+                    {(() => {
+                      const coverImg = getEntityCoverImage(machine);
+                      return coverImg ? (
+                        <img src={coverImg} alt={getLocalizedValue(machine.name, locale)} className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      ) : (
+                        <div className="h-52 w-full bg-muted flex items-center justify-center"><Factory className="h-12 w-12 text-muted-foreground" /></div>
+                      );
+                    })()}
                     {isMachineFeatured(machine) && (
                       <Badge className="absolute top-3 start-3 bg-primary text-primary-foreground">
                         {t.common.featured}

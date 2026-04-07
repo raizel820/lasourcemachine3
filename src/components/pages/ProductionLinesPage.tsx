@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
-import { getLocalizedValue, truncateText } from '@/lib/helpers';
+import { getLocalizedValue, truncateText, getEntityCoverImage } from '@/lib/helpers';
 import type { ProductionLine } from '@/lib/types';
 
 export function ProductionLinesPage() {
@@ -74,22 +74,14 @@ export function ProductionLinesPage() {
                 <Card key={line.id} className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => handleViewDetail(line)}>
                   <div className="relative overflow-hidden rounded-t-xl">
                     {(() => {
-                      try {
-                        const imgs = JSON.parse(line.images);
-                        return imgs[0] ? (
-                          <img src={imgs[0]} alt={getLocalizedValue(line.name, locale)} className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        ) : (
-                          <div className="h-52 w-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                            <Factory className="h-12 w-12 text-primary/30" />
-                          </div>
-                        );
-                      } catch {
-                        return (
-                          <div className="h-52 w-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                            <Factory className="h-12 w-12 text-primary/30" />
-                          </div>
-                        );
-                      }
+                      const coverImg = getEntityCoverImage(line);
+                      return coverImg ? (
+                        <img src={coverImg} alt={getLocalizedValue(line.name, locale)} className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      ) : (
+                        <div className="h-52 w-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                          <Factory className="h-12 w-12 text-primary/30" />
+                        </div>
+                      );
                     })()}
                     {line.isFeatured && (
                       <Badge className="absolute top-3 start-3 bg-primary text-primary-foreground">{t.common.featured}</Badge>

@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
-import { getLocalizedValue, formatDate } from '@/lib/helpers';
+import { getLocalizedValue, formatDate, getEntityCoverImage, getEntityGallery } from '@/lib/helpers';
 import type { Project } from '@/lib/types';
 
 export function ProjectDetailPage() {
@@ -69,7 +69,7 @@ export function ProjectDetailPage() {
     );
   }
 
-  const images: string[] = (() => { try { return JSON.parse(project.images); } catch { return []; } })();
+  const images: string[] = getEntityGallery(project);
   const BackArrow = isRTL ? ArrowRight : ArrowLeft;
 
   return (
@@ -82,13 +82,16 @@ export function ProjectDetailPage() {
 
         {/* Cover Image */}
         <div className="rounded-xl overflow-hidden bg-muted mb-8">
-          {images.length > 0 ? (
-            <img src={images[0]} alt={getLocalizedValue(project.title, locale)} className="w-full h-64 sm:h-96 object-cover" />
-          ) : (
-            <div className="w-full h-64 sm:h-96 flex items-center justify-center">
-              <Briefcase className="h-20 w-20 text-muted-foreground/30" />
-            </div>
-          )}
+          {(() => {
+            const coverImg = getEntityCoverImage(project);
+            return coverImg ? (
+              <img src={coverImg} alt={getLocalizedValue(project.title, locale)} className="w-full h-64 sm:h-96 object-cover" />
+            ) : (
+              <div className="w-full h-64 sm:h-96 flex items-center justify-center">
+                <Briefcase className="h-20 w-20 text-muted-foreground/30" />
+              </div>
+            );
+          })()}
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -126,7 +129,7 @@ export function ProjectDetailPage() {
                 {locale === 'ar' ? 'معرض الصور' : locale === 'fr' ? 'Galerie de Photos' : 'Photo Gallery'}
               </h2>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                {images.slice(1).map((img, i) => (
+                {images.map((img, i) => (
                   <div key={i} className="rounded-lg overflow-hidden">
                     <img src={img} alt="" className="w-full h-40 object-cover hover:scale-105 transition-transform" />
                   </div>
@@ -146,7 +149,10 @@ export function ProjectDetailPage() {
                 {relatedProjects.map((p) => (
                   <Card key={p.id} className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => { setCurrentSlug(p.slug); window.scrollTo(0, 0); }}>
                     <div className="h-32 bg-muted">
-                      {(() => { try { const imgs = JSON.parse(p.images); return imgs[0] ? <img src={imgs[0]} alt="" className="h-full w-full object-cover" /> : null; } catch { return null; } })() || <div className="h-full w-full flex items-center justify-center"><Briefcase className="h-8 w-8 text-muted-foreground/30" /></div>}
+                      {(() => {
+                        const pImg = getEntityCoverImage(p);
+                        return pImg ? <img src={pImg} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full flex items-center justify-center"><Briefcase className="h-8 w-8 text-muted-foreground/30" /></div>;
+                      })()}
                     </div>
                     <CardContent className="pt-3 px-4">
                       <h3 className="font-semibold text-sm">{getLocalizedValue(p.title, locale)}</h3>

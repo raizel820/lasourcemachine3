@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { RequestQuoteModal } from '@/components/shared/RequestQuoteModal';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
-import { getLocalizedValue } from '@/lib/helpers';
+import { getLocalizedValue, getEntityCoverImage, getEntityGallery } from '@/lib/helpers';
 import type { ProductionLine, Machine } from '@/lib/types';
 
 export function ProductionLineDetailPage() {
@@ -81,7 +81,7 @@ export function ProductionLineDetailPage() {
     );
   }
 
-  const images: string[] = (() => { try { return JSON.parse(line.images); } catch { return []; } })();
+  const images: string[] = getEntityGallery(line);
   const BackArrow = isRTL ? ArrowRight : ArrowLeft;
 
   return (
@@ -95,13 +95,16 @@ export function ProductionLineDetailPage() {
 
           {/* Cover */}
           <div className="rounded-xl overflow-hidden bg-muted mb-8">
-            {images.length > 0 ? (
-              <img src={images[0]} alt={getLocalizedValue(line.name, locale)} className="w-full h-64 sm:h-96 object-cover" />
-            ) : (
-              <div className="w-full h-64 sm:h-96 flex items-center justify-center">
-                <Factory className="h-20 w-20 text-muted-foreground/30" />
-              </div>
-            )}
+            {(() => {
+              const coverImg = getEntityCoverImage(line);
+              return coverImg ? (
+                <img src={coverImg} alt={getLocalizedValue(line.name, locale)} className="w-full h-64 sm:h-96 object-cover" />
+              ) : (
+                <div className="w-full h-64 sm:h-96 flex items-center justify-center">
+                  <Factory className="h-20 w-20 text-muted-foreground/30" />
+                </div>
+              );
+            })()}
           </div>
 
           <div className="max-w-4xl mx-auto">
@@ -124,8 +127,9 @@ export function ProductionLineDetailPage() {
                     <Card key={m.id} className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => { setCurrentSlug(m.slug); setCurrentPage('machine-detail'); }}>
                       <div className="h-32 bg-muted">
                         {(() => {
-                          try { const imgs = JSON.parse(m.images); return imgs[0] ? <img src={imgs[0]} alt="" className="h-full w-full object-cover" /> : null; } catch { return null; }
-                        })() || <div className="h-full w-full flex items-center justify-center"><Factory className="h-8 w-8 text-muted-foreground/30" /></div>}
+                          const mImg = getEntityCoverImage(m);
+                          return mImg ? <img src={mImg} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full flex items-center justify-center"><Factory className="h-8 w-8 text-muted-foreground/30" /></div>;
+                        })()}
                       </div>
                       <CardContent className="pt-3 px-4">
                         <h3 className="font-semibold text-sm">{getLocalizedValue(m.name, locale)}</h3>

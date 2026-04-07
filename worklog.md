@@ -462,3 +462,31 @@ Stage Summary:
 - Admin settings logo/favicon/OG image replacement also cleans up old files
 - External URLs (not starting with /uploads/) are never touched — only self-hosted uploads are deleted
 - File deletion errors are silently caught to prevent blocking database operations
+---
+Task ID: 7
+Agent: main-agent
+Task: Fix cover image not being used on machines, production lines, projects, services pages; verify image deletion on entity delete
+
+Work Log:
+- Verified all DELETE API routes already call `deleteUploadedFiles()` from `@/lib/file-cleanup` for cleanup
+- Verified settings API already handles old logo/favicon/ogImage cleanup on replacement
+- Confirmed `file-cleanup.ts` properly handles JSON arrays and single URLs
+- Identified root cause: Frontend pages ignored `coverImage` field and only used `images[0]` from gallery
+- Added `getEntityCoverImage()` helper to `src/lib/helpers.ts` — priority: coverImage > image > images[0] > null
+- Added `getEntityGallery()` helper to `src/lib/helpers.ts` — merges coverImage with gallery images, deduped
+- Updated MachinesPage.tsx — uses `getEntityCoverImage()` for card thumbnails
+- Updated MachineDetailPage.tsx — uses `getEntityGallery()` for main gallery (coverImage first), related machines use cover
+- Updated ProductionLinesPage.tsx — uses `getEntityCoverImage()` for card thumbnails
+- Updated ProductionLineDetailPage.tsx — uses `getEntityCoverImage()` for cover display, `getEntityGallery()` for included machines
+- Updated ProjectsPage.tsx — uses `getEntityCoverImage()` for card thumbnails
+- Updated ProjectDetailPage.tsx — uses `getEntityCoverImage()` for hero, `getEntityGallery()` for gallery grid, related projects use cover
+- Updated ServicesPage.tsx — shows service.image when available, falls back to static icon
+- Updated HomePage.tsx — featured machines now use `getEntityCoverImage()`
+- Fixed JSX nesting issues in MachinesPage, ProductionLinesPage, ProjectsPage (Badge placement)
+- Lint passes clean
+
+Stage Summary:
+- Cover images now properly display across all entity pages (machines, production lines, news, projects, services)
+- Image deletion on entity delete was already implemented and verified working
+- Settings logo/favicon/ogImage cleanup on replacement was already implemented and verified
+- New utility functions `getEntityCoverImage()` and `getEntityGallery()` available for reuse

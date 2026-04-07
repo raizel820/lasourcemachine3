@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
-import { getLocalizedValue, truncateText } from '@/lib/helpers';
+import { getLocalizedValue, truncateText, getEntityCoverImage } from '@/lib/helpers';
 import type { Project } from '@/lib/types';
 
 export function ProjectsPage() {
@@ -61,12 +61,15 @@ export function ProjectsPage() {
                 <Card key={project.id} className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => handleViewDetail(project)}>
                   <div className="relative overflow-hidden rounded-t-xl">
                     {(() => {
-                      try { const imgs = JSON.parse(project.images); return imgs[0] ? <img src={imgs[0]} alt={getLocalizedValue(project.title, locale)} className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105" /> : null; } catch { return null; }
-                    })() || (
-                      <div className="h-52 w-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                        <Briefcase className="h-12 w-12 text-primary/30" />
-                      </div>
-                    )}
+                      const coverImg = getEntityCoverImage(project);
+                      return coverImg ? (
+                        <img src={coverImg} alt={getLocalizedValue(project.title, locale)} className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      ) : (
+                        <div className="h-52 w-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                          <Briefcase className="h-12 w-12 text-primary/30" />
+                        </div>
+                      );
+                    })()}
                     <Badge className={`absolute top-3 start-3 ${project.status === 'completed' ? 'bg-green-600' : project.status === 'in_progress' ? 'bg-yellow-600' : 'bg-blue-600'} text-white`}>
                       {project.status === 'completed' ? (locale === 'ar' ? 'مكتمل' : locale === 'fr' ? 'Terminé' : 'Completed') : project.status === 'in_progress' ? (locale === 'ar' ? 'قيد التنفيذ' : locale === 'fr' ? 'En Cours' : 'In Progress') : (locale === 'ar' ? 'تخطيط' : locale === 'fr' ? 'Planifié' : 'Planning')}
                     </Badge>

@@ -123,6 +123,52 @@ export function truncateText(
 }
 
 /**
+ * Get the primary cover/thumbnail image for an entity.
+ * Priority: coverImage > images[0] from gallery > null
+ */
+export function getEntityCoverImage(entity: Record<string, any>): string | null {
+  // Prefer dedicated coverImage field
+  if (entity.coverImage) return entity.coverImage;
+  // Fall back to service image field
+  if (entity.image) return entity.image;
+  // Fall back to first image in gallery JSON array
+  if (entity.images) {
+    try {
+      const imgs = JSON.parse(entity.images);
+      if (Array.isArray(imgs) && imgs.length > 0 && typeof imgs[0] === 'string') {
+        return imgs[0];
+      }
+    } catch { /* not valid JSON */ }
+  }
+  return null;
+}
+
+/**
+ * Get all images for an entity (gallery), prepending coverImage if distinct.
+ * Returns an array of image URL strings.
+ */
+export function getEntityGallery(entity: Record<string, any>): string[] {
+  const images: string[] = [];
+  const cover = entity.coverImage || entity.image;
+  if (cover) {
+    images.push(cover);
+  }
+  if (entity.images) {
+    try {
+      const imgs = JSON.parse(entity.images);
+      if (Array.isArray(imgs)) {
+        for (const img of imgs) {
+          if (typeof img === 'string' && img !== cover) {
+            images.push(img);
+          }
+        }
+      }
+    } catch { /* not valid JSON */ }
+  }
+  return images;
+}
+
+/**
  * Build a Google Maps embed URL from coordinates.
  */
 export function getGoogleMapsEmbedUrl(
