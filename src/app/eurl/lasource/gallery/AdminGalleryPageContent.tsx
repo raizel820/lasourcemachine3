@@ -84,6 +84,7 @@ export default function AdminGalleryPage() {
   const [previewFile, setPreviewFile] = useState<GalleryFile | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadFolder, setUploadFolder] = useState('general');
+  const [folderFilter, setFolderFilter] = useState('all');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ urls: string[]; names: string[]; hasExternal: boolean } | null>(null);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
@@ -111,7 +112,7 @@ export default function AdminGalleryPage() {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [sourceFilter, typeFilter, searchQuery]);
+  }, [sourceFilter, typeFilter, searchQuery, folderFilter]);
 
   // Derive sources from data
   const sources = useMemo(() => {
@@ -119,18 +120,25 @@ export default function AdminGalleryPage() {
     return Array.from(s);
   }, [allFiles]);
 
+  // Derive folders from data
+  const uniqueFolders = useMemo(() => {
+    const s = new Set(allFiles.map(f => f.folder));
+    return Array.from(s).sort();
+  }, [allFiles]);
+
   // Client-side filtering
   const files = useMemo(() => {
     return allFiles.filter(f => {
       if (sourceFilter && sourceFilter !== 'all' && f.source !== sourceFilter) return false;
       if (typeFilter && typeFilter !== 'all' && f.type !== typeFilter) return false;
+      if (folderFilter && folderFilter !== 'all' && f.folder !== folderFilter) return false;
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         if (!f.fileName.toLowerCase().includes(q) && !f.sourceLabel.toLowerCase().includes(q) && !f.url.toLowerCase().includes(q)) return false;
       }
       return true;
     });
-  }, [allFiles, sourceFilter, typeFilter, searchQuery]);
+  }, [allFiles, sourceFilter, typeFilter, folderFilter, searchQuery]);
 
   // Stats from all data
   const stats = useMemo(() => {
@@ -248,17 +256,16 @@ export default function AdminGalleryPage() {
         </div>
         <div className="flex items-center gap-2">
           <input type="file" ref={fileInputRef} multiple accept="image/*,.pdf" className="hidden" onChange={handleUpload} />
-          <Select value={uploadFolder} onValueChange={setUploadFolder}>
-            <SelectTrigger className="w-[130px] h-9 text-xs">
+          <Select value={folderFilter} onValueChange={(val) => { setFolderFilter(val); if (val !== 'all') setUploadFolder(val); }}>
+            <SelectTrigger className="w-[140px] h-9 text-xs">
               <FolderOpen className="h-3.5 w-3.5 mr-1.5" />
-              <SelectValue />
+              <SelectValue placeholder="All Folders" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="general">general</SelectItem>
-              <SelectItem value="branding">branding</SelectItem>
-              <SelectItem value="machines">machines</SelectItem>
-              <SelectItem value="news">news</SelectItem>
-              <SelectItem value="documents">documents</SelectItem>
+              <SelectItem value="all">All Folders</SelectItem>
+              {uniqueFolders.map(f => (
+                <SelectItem key={f} value={f}>{f}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Button size="sm" onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="cursor-pointer">
@@ -382,8 +389,8 @@ export default function AdminGalleryPage() {
         <div className="text-center py-20">
           <ImagePlus className="mx-auto h-16 w-16 text-muted-foreground/20 mb-4" />
           <h3 className="text-lg font-medium text-muted-foreground">No files found</h3>
-          <p className="text-sm text-muted-foreground mt-1">{searchQuery || sourceFilter !== 'all' || typeFilter !== 'all' ? 'Try adjusting your filters' : 'Upload your first file to get started'}</p>
-          {!searchQuery && sourceFilter === 'all' && typeFilter === 'all' && (
+          <p className="text-sm text-muted-foreground mt-1">{searchQuery || sourceFilter !== 'all' || typeFilter !== 'all' || folderFilter !== 'all' ? 'Try adjusting your filters' : 'Upload your first file to get started'}</p>
+          {!searchQuery && sourceFilter === 'all' && typeFilter === 'all' && folderFilter === 'all' && (
             <Button className="mt-4 cursor-pointer" onClick={() => fileInputRef.current?.click()}><Upload className="h-4 w-4 mr-2" />Upload Files</Button>
           )}
         </div>
