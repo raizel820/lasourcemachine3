@@ -17,7 +17,7 @@ import { DEFAULT_PAGE_SIZE } from '@/lib/constants';
 type AnyRecord = any;
 
 export function MachinesPage() {
-  const { locale, currency, setCurrentPage, setCurrentSlug, currentPageNumber, setCurrentPageNumber } = useAppStore();
+  const { locale, currency, setCurrentPage, setCurrentSlug, currentPageNumber, setCurrentPageNumber, currentCategoryFilter, setCurrentCategoryFilter } = useAppStore();
   const t = getTranslations(locale);
   const [machines, setMachines] = useState<AnyRecord[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -52,9 +52,8 @@ export function MachinesPage() {
 
   const filteredMachines = useMemo(() => {
     let result = machines;
-    const categoryFilter = useAppStore.getState().currentCategoryFilter;
-    if (categoryFilter) {
-      result = result.filter((m: AnyRecord) => m.categoryId === categoryFilter);
+    if (currentCategoryFilter) {
+      result = result.filter((m: AnyRecord) => m.categoryId === currentCategoryFilter);
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -65,7 +64,7 @@ export function MachinesPage() {
       );
     }
     return result;
-  }, [machines, searchQuery, locale]);
+  }, [machines, searchQuery, locale, currentCategoryFilter]);
 
   const paginatedMachines = useMemo(() => {
     const start = (currentPageNumber - 1) * DEFAULT_PAGE_SIZE;
@@ -115,18 +114,18 @@ export function MachinesPage() {
             </div>
             <div className="flex gap-2 flex-wrap">
               <Badge
-                variant={!useAppStore.getState().currentCategoryFilter ? 'default' : 'outline'}
+                variant={!currentCategoryFilter ? 'default' : 'outline'}
                 className="cursor-pointer px-3 py-1.5"
-                onClick={() => useAppStore.getState().setCurrentCategoryFilter('')}
+                onClick={() => setCurrentCategoryFilter('')}
               >
                 {t.common.all}
               </Badge>
               {categories.map(cat => (
                 <Badge
                   key={cat.id}
-                  variant={useAppStore.getState().currentCategoryFilter === cat.id ? 'default' : 'outline'}
+                  variant={currentCategoryFilter === cat.id ? 'default' : 'outline'}
                   className="cursor-pointer px-3 py-1.5"
-                  onClick={() => useAppStore.getState().setCurrentCategoryFilter(cat.id)}
+                  onClick={() => setCurrentCategoryFilter(cat.id)}
                 >
                   {getLocalizedValue(cat.name, locale)}
                 </Badge>
