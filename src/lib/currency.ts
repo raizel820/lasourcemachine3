@@ -2,14 +2,34 @@ import type { Locale, Currency } from './types';
 import { RTL_LOCALES } from './constants';
 
 /**
- * Exchange rates relative to DZD (Algerian Dinar).
- * These are approximate rates and should be updated periodically.
+ * Default exchange rates relative to DZD (Algerian Dinar).
+ * Used as fallback when no admin-configured rates are available.
  */
-const EXCHANGE_RATES: Record<Currency, number> = {
+const DEFAULT_EXCHANGE_RATES: Record<Currency, number> = {
   DZD: 1,
   USD: 0.0074,
   EUR: 0.0068,
 };
+
+/**
+ * Current exchange rates — can be overridden via setExchangeRates().
+ * Initialized with defaults, updated from admin settings at runtime.
+ */
+let currentRates: Record<Currency, number> = { ...DEFAULT_EXCHANGE_RATES };
+
+/**
+ * Update exchange rates at runtime (called after fetching from admin settings).
+ */
+export function setExchangeRates(rates: Record<Currency, number>) {
+  currentRates = { ...DEFAULT_EXCHANGE_RATES, ...rates };
+}
+
+/**
+ * Get the current exchange rates (for display or external use).
+ */
+export function getExchangeRates(): Record<Currency, number> {
+  return { ...currentRates };
+}
 
 /**
  * Currency display symbols by currency code
@@ -39,8 +59,8 @@ export function convertPrice(
   toCurrency: Currency
 ): number {
   // Convert to DZD first, then to target
-  const amountInDZD = amount / EXCHANGE_RATES[fromCurrency];
-  return amountInDZD * EXCHANGE_RATES[toCurrency];
+  const amountInDZD = amount / currentRates[fromCurrency];
+  return amountInDZD * currentRates[toCurrency];
 }
 
 /**

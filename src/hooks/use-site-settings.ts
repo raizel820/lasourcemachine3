@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { COMPANY } from '@/lib/constants';
-import type { Locale } from '@/lib/types';
+import { setExchangeRates } from '@/lib/currency';
+import type { Locale, Currency } from '@/lib/types';
 
 interface SiteSettings {
   [key: string]: string;
@@ -14,6 +15,19 @@ let cachedData: SiteSettings | null = null;
 let cacheETag = ''; // track fetch freshness
 let versionCounter = 0; // bumped on invalidation
 const subscribers = new Set<() => void>();
+
+/** Push exchange rates from settings data into the currency module */
+function syncRates(data: SiteSettings) {
+  const usd = parseFloat(data.exchange_rate_usd);
+  const eur = parseFloat(data.exchange_rate_eur);
+  if (usd > 0 || eur > 0) {
+    setExchangeRates({
+      DZD: 1,
+      USD: usd > 0 ? usd : 0.0074,
+      EUR: eur > 0 ? eur : 0.0068,
+    });
+  }
+}
 
 function notifyAll() {
   versionCounter += 1;
@@ -68,6 +82,7 @@ export function useSiteSettings() {
     async function load() {
       // If cache is fresh from a recent fetch, use it synchronously
       if (cachedData && localVer.current === versionCounter) {
+        syncRates(cachedData);
         setSettings(cachedData);
         setLoaded(true);
         return;
@@ -78,6 +93,8 @@ export function useSiteSettings() {
       if (data) {
         cachedData = data;
         localVer.current = versionCounter;
+        // Sync exchange rates into currency module
+        syncRates(data);
       }
       setSettings(cachedData);
       setLoaded(true);
@@ -106,6 +123,7 @@ export function useSiteSettings() {
           if (data) {
             cachedData = data;
             localVer.current = versionCounter;
+            syncRates(data);
             setSettings(data);
           }
         });

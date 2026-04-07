@@ -403,3 +403,30 @@ Stage Summary:
 - Machine count displayed per category
 - Safe deletion with machine unlinking
 - Slug auto-generation from English name on create
+---
+Task ID: 5
+Agent: Main Agent
+Task: Make exchange rates configurable from admin settings
+
+Work Log:
+- Rewrote `currency.ts` — replaced hardcoded `EXCHANGE_RATES` const with a mutable `currentRates` module variable
+- Added `setExchangeRates(rates)` function to update rates at runtime
+- Added `getExchangeRates()` function to read current rates (for display)
+- Default rates still hardcoded as fallback: DZD=1, USD=0.0074, EUR=0.0068
+- Updated `useSiteSettings` hook with `syncRates()` helper that reads `exchange_rate_usd` and `exchange_rate_eur` from settings data and calls `setExchangeRates()`
+- Rates are synced in 3 places: initial fetch, cache-hit path, and tab visibility change
+- Added "Currency & Exchange Rates" section to AdminSettingsPage with:
+  - USD rate input (1 DZD = ? USD) with step 0.0001
+  - EUR rate input (1 DZD = ? EUR) with step 0.0001
+  - Live preview showing inverse calculation (e.g., "1 USD ≈ 135 DZD")
+  - Explanatory text for admins
+- Added default values to DEFAULT_SETTINGS: exchange_rate_usd='0.0074', exchange_rate_eur='0.0068'
+- No changes needed in consumer components (MachineDetailPage, MachinesPage, HomePage) — they already use convertPrice/formatPrice which now reads from the live module variable
+- Lint passes clean, dev server compiles successfully
+
+Stage Summary:
+- Exchange rates now configurable from admin panel Settings page
+- Rates are stored in the database as site settings (exchange_rate_usd, exchange_rate_eur)
+- All price conversions across the site automatically use the admin-configured rates
+- Rates update in real-time after admin saves (via cache invalidation + re-fetch)
+- Helpful UI shows the inverse rate (e.g., how many DZD per USD/EUR)

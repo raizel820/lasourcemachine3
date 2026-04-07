@@ -56,6 +56,8 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   stats_countries: '10',
   recaptcha_site_key: '',
   recaptcha_secret_key: '',
+  exchange_rate_usd: '0.0074',
+  exchange_rate_eur: '0.0068',
 };
 
 export function AdminSettingsPage() {
@@ -356,6 +358,51 @@ export function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label>Countries</Label>
                 <Input type="number" value={settings.stats_countries} onChange={(e) => updateSetting('stats_countries', e.target.value)} placeholder="10" />
+              </div>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Currency & Exchange Rates */}
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold">Currency & Exchange Rates</h2>
+            <p className="text-sm text-muted-foreground">
+              Set exchange rates relative to 1 DZD (Algerian Dinar). For example, if 1 USD = 135 DZD, enter 0.0074.
+              These rates are used to convert machine prices when visitors switch currency.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>
+                  USD Rate <span className="text-muted-foreground font-normal">(1 DZD = ? USD)</span>
+                </Label>
+                <Input
+                  type="number"
+                  step="0.0001"
+                  min="0"
+                  value={settings.exchange_rate_usd || ''}
+                  onChange={(e) => updateSetting('exchange_rate_usd', e.target.value)}
+                  placeholder="0.0074"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Example: 1 DZD = 0.0074 USD means 1 USD ≈ {settings.exchange_rate_usd ? Math.round(1 / parseFloat(settings.exchange_rate_usd || '0.0074')) : '135'} DZD
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label>
+                  EUR Rate <span className="text-muted-foreground font-normal">(1 DZD = ? EUR)</span>
+                </Label>
+                <Input
+                  type="number"
+                  step="0.0001"
+                  min="0"
+                  value={settings.exchange_rate_eur || ''}
+                  onChange={(e) => updateSetting('exchange_rate_eur', e.target.value)}
+                  placeholder="0.0068"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Example: 1 DZD = 0.0068 EUR means 1 EUR ≈ {settings.exchange_rate_eur ? Math.round(1 / parseFloat(settings.exchange_rate_eur || '0.0068')) : '147'} DZD
+                </p>
               </div>
             </div>
           </section>
