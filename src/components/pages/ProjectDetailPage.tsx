@@ -26,7 +26,8 @@ export function ProjectDetailPage() {
         const res = await fetch(`/api/projects?slug=${currentSlug}`);
         if (res.ok) {
           const data = await res.json();
-          const p = data.data || data.projects?.[0] || null;
+          const arr = Array.isArray(data.data) ? data.data : (data.projects || []);
+          const p = arr.length > 0 ? arr[0] : null;
           setProject(p);
         }
         const allRes = await fetch('/api/projects?limit=100');

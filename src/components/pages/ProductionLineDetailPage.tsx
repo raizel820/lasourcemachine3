@@ -27,7 +27,8 @@ export function ProductionLineDetailPage() {
         const res = await fetch(`/api/production-lines?slug=${currentSlug}`);
         if (res.ok) {
           const data = await res.json();
-          const l = data.data || data.productionLines?.[0] || null;
+          const arr = Array.isArray(data.data) ? data.data : (data.productionLines || []);
+          const l = arr.length > 0 ? arr[0] : null;
           setLine(l);
         }
       } finally {

@@ -33,7 +33,8 @@ export function MachineDetailPage() {
         const res = await fetch(`/api/machines?slug=${currentSlug}`);
         if (res.ok) {
           const data = await res.json();
-          const m = data.data || data.machines?.[0] || null;
+          const arr = Array.isArray(data.data) ? data.data : (data.machines || []);
+          const m = arr.length > 0 ? arr[0] : null;
           setMachine(m);
         }
         const allRes = await fetch('/api/machines?limit=100');

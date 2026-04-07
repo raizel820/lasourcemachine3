@@ -26,7 +26,8 @@ export function NewsDetailPage() {
         const res = await fetch(`/api/news?slug=${currentSlug}`);
         if (res.ok) {
           const data = await res.json();
-          const p = data.data || data.news?.[0] || null;
+          const arr = Array.isArray(data.data) ? data.data : (data.news || []);
+          const p = arr.length > 0 ? arr[0] : null;
           setPost(p);
         }
         const allRes = await fetch('/api/news?limit=100&status=published');
