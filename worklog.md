@@ -521,3 +521,41 @@ Stage Summary:
 - API endpoint at `/api/gallery` handles listing, uploading, and deleting files
 - All uploaded files across all folders visible and manageable from one place
 - Supports multi-file operations (select, bulk delete, multi-upload)
+---
+Task ID: 9
+Agent: main-agent
+Task: Fix logo to circular shape + make gallery show all images from all entities
+
+Work Log:
+- Changed company logo from rounded-lg (square) to rounded-full (circle) in 3 locations:
+  - Navbar desktop: h-10 w-10 rounded-full with p-1 for padding
+  - Navbar mobile sheet: h-9 w-9 rounded-full with p-0.5
+  - Footer: h-10 w-10 rounded-full with p-1 and hover scale
+- Fallback icon containers also changed to rounded-full
+- Completely rewrote /api/gallery API to collect images from ALL sources:
+  - Disk scan of public/uploads/ (existing behavior)
+  - Machine: coverImage + images[] + pdfUrl
+  - ProductionLine: coverImage + images[]
+  - NewsPost: coverImage + images[]
+  - Project: coverImage + images[]
+  - Service: image
+  - Partner: logo
+  - SiteSetting: company_logo, company_favicon, seo_og_image
+- Each gallery item now has: source, sourceLabel, isExternal fields
+- API returns sources list, sourceCounts in stats
+- Sort: disk files first (by date desc), then DB entities (alphabetical)
+- Deduplication: same URL won't appear twice even if referenced by multiple entities
+- Updated Gallery UI with:
+  - Source filter dropdown (All Sources, Machines, Production Lines, News, etc.)
+  - Color-coded source badges on each card
+  - External URL indicator badge (yellow Globe icon)
+  - Source label shown under filename
+  - Source column in list view instead of folder
+  - Delete disabled for external URLs (only local /uploads/ files deletable)
+  - Preview shows source badge and external indicator
+
+Stage Summary:
+- Company logo is now circular across navbar, mobile menu, and footer
+- Gallery shows ALL images from every entity type + uploaded files + settings logos
+- Source filtering allows viewing images per entity type
+- External URLs clearly marked and protected from accidental deletion
