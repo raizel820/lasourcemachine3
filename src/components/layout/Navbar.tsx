@@ -120,14 +120,14 @@ export function Navbar() {
               <img
                 src={site.companyLogo}
                 alt={companyName}
-                className="h-10 w-10 rounded-full object-contain bg-primary p-1"
+                className="h-10 w-10 rounded-lg object-contain bg-primary p-1"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
                   (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
                 }}
               />
             ) : null}
-            <div className={cn('flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground', site.companyLogo && !site.companyLogo.includes('placeholder') && 'hidden')}>
+            <div className={cn('flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground', site.companyLogo && !site.companyLogo.includes('placeholder') && 'hidden')}>
               <Factory className="h-5 w-5" />
             </div>
             <div className="hidden sm:block">
@@ -238,14 +238,14 @@ export function Navbar() {
                 <img
                   src={site.companyLogo}
                   alt={companyName}
-                  className="h-9 w-9 rounded-full object-contain p-0.5"
+                  className="h-9 w-9 rounded-lg object-contain p-0.5"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                     (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
                   }}
                 />
               ) : null}
-              <div className={cn('flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground', site.companyLogo && !site.companyLogo.includes('placeholder') && 'hidden')}>
+              <div className={cn('flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground', site.companyLogo && !site.companyLogo.includes('placeholder') && 'hidden')}>
                 <Factory className="h-4 w-4" />
               </div>
               <span>{companyName}</span>

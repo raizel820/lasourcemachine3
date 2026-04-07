@@ -559,3 +559,22 @@ Stage Summary:
 - Gallery shows ALL images from every entity type + uploaded files + settings logos
 - Source filtering allows viewing images per entity type
 - External URLs clearly marked and protected from accidental deletion
+
+---
+Task ID: 10
+Agent: main-agent
+Task: Fix gallery not showing images + fix logo shape from circle to square
+
+Work Log:
+- Diagnosed gallery 401 error: `fetchFiles` and `handleUpload` in AdminGalleryPageContent.tsx were missing `Authorization: Bearer admin-token` header
+- Added Authorization header to both fetch calls in the gallery page
+- Changed company logo from `rounded-full` (circle) to `rounded-lg` (square) in 6 locations:
+  - Navbar desktop logo img and fallback div
+  - Navbar mobile sheet logo img and fallback div
+  - Footer logo img and fallback div
+- Verified gallery API now returns 200 with images from all entity types
+- Lint passes clean
+
+Stage Summary:
+- Gallery now correctly shows all images from machines, production lines, news, projects, services, partners, and site settings
+- Company logo displays as square with rounded corners instead of circle

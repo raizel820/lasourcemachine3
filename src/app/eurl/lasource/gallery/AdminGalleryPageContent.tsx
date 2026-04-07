@@ -98,7 +98,9 @@ export default function AdminGalleryPage() {
       if (typeFilter && typeFilter !== 'all') params.set('type', typeFilter);
       if (searchQuery) params.set('search', searchQuery);
 
-      const res = await fetch(`/api/gallery?${params.toString()}`);
+      const res = await fetch(`/api/gallery?${params.toString()}`, {
+        headers: { 'Authorization': 'Bearer admin-token' },
+      });
       if (res.ok) {
         const data = await res.json();
         setFiles(data.data || []);
@@ -147,7 +149,11 @@ export default function AdminGalleryPage() {
       const formData = new FormData();
       for (let i = 0; i < selected.length; i++) formData.append('files', selected[i]);
       formData.append('folder', uploadFolder);
-      const res = await fetch('/api/gallery', { method: 'POST', body: formData });
+      const res = await fetch('/api/gallery', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer admin-token' },
+        body: formData,
+      });
       if (res.ok) {
         const data = await res.json();
         if (data.errors?.length > 0) {
