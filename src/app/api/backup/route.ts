@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const stream = await generateBackup();
     const filename = `lasource-backup-${new Date().toISOString().slice(0, 10)}.zip`;
 
-    return new NextResponse(stream as ReadableStream, {
+    return new NextResponse(stream as unknown as ReadableStream, {
       headers: {
         'Content-Type': 'application/zip',
         'Content-Disposition': `attachment; filename="${filename}"`,
@@ -67,8 +67,8 @@ export async function POST(req: NextRequest) {
 
       const tableCounts: { name: string; count: number }[] = [];
       for (const t of tables) {
-        // @ts-expect-error - dynamic model access
-        const count = await db[t.model].count();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const count = await (db as any)[t.model].count();
         tableCounts.push({ name: t.key, count });
       }
 
