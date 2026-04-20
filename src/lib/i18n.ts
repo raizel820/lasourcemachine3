@@ -40,6 +40,14 @@ export const translations = {
       title: 'Our Services',
       subtitle:
         'From installation to maintenance, we offer comprehensive services to keep your operations running smoothly.',
+      requestService: 'Request a Service',
+      selectService: 'Select a Service',
+      selectServicePlaceholder: 'Choose a service...',
+      interestedMachines: 'Interested Machines',
+      interestedMachinesPlaceholder: 'Select machines you are interested in...',
+      note: 'Additional Note',
+      notePlaceholder: 'Describe your needs, project details, or any specific requirements...',
+      serviceRequestSubject: 'Service Request',
     },
     projects: {
       title: 'Our Projects',
@@ -170,6 +178,14 @@ export const translations = {
       title: 'Nos Services',
       subtitle:
         'De l\'installation à la maintenance, nous offrons des services complets pour assurer le bon fonctionnement de vos opérations.',
+      requestService: 'Demander un Service',
+      selectService: 'Sélectionner un Service',
+      selectServicePlaceholder: 'Choisir un service...',
+      interestedMachines: 'Machines Intéressées',
+      interestedMachinesPlaceholder: 'Sélectionner les machines qui vous intéressent...',
+      note: 'Note Supplémentaire',
+      notePlaceholder: 'Décrivez vos besoins, détails du projet ou exigences spécifiques...',
+      serviceRequestSubject: 'Demande de Service',
     },
     projects: {
       title: 'Nos Projets',
@@ -300,6 +316,14 @@ export const translations = {
       title: 'خدماتنا',
       subtitle:
         'من التركيب إلى الصيانة، نقدم خدمات شاملة لضمان سير عملياتك بسلاسة.',
+      requestService: 'اطلب خدمة',
+      selectService: 'اختر خدمة',
+      selectServicePlaceholder: 'اختر خدمة...',
+      interestedMachines: 'الآلات المطلوبة',
+      interestedMachinesPlaceholder: 'اختر الآلات التي تهتم بها...',
+      note: 'ملاحظة إضافية',
+      notePlaceholder: 'صف احتياجاتك أو تفاصيل المشروع أو أي متطلبات خاصة...',
+      serviceRequestSubject: 'طلب خدمة',
     },
     projects: {
       title: 'مشاريعنا',

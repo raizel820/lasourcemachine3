@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Wrench, Check, ArrowRight } from 'lucide-react';
+import { Wrench, Check, ArrowRight, HeadphonesIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SectionHeader } from '@/components/shared/SectionHeader';
+import { ServiceRequestModal } from '@/components/shared/ServiceRequestModal';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
 import { getLocalizedValue, getLocalizedArray, getEntityCoverImage } from '@/lib/helpers';
@@ -17,6 +18,8 @@ export function ServicesPage() {
   const t = getTranslations(locale);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showServiceRequest, setShowServiceRequest] = useState(false);
+  const [preselectedServiceId, setPreselectedServiceId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,6 +36,11 @@ export function ServicesPage() {
     }
     fetchData();
   }, []);
+
+  const handleRequestService = (serviceId?: string) => {
+    setPreselectedServiceId(serviceId);
+    setShowServiceRequest(true);
+  };
 
   return (
     <>
@@ -91,7 +99,7 @@ export function ServicesPage() {
                         <h3 className="text-2xl font-bold mb-3">{name}</h3>
                         <p className="text-muted-foreground leading-relaxed mb-6">{desc}</p>
                         {features.length > 0 && (
-                          <ul className="space-y-2">
+                          <ul className="space-y-2 mb-6">
                             {features.map((f, fi) => (
                               <li key={fi} className="flex items-center gap-2 text-sm">
                                 <Check className="h-4 w-4 text-primary shrink-0" />
@@ -100,6 +108,14 @@ export function ServicesPage() {
                             ))}
                           </ul>
                         )}
+                        <Button
+                          variant="outline"
+                          className="w-fit cursor-pointer"
+                          onClick={() => handleRequestService(service.id)}
+                        >
+                          <HeadphonesIcon className="h-4 w-4 mr-2 rtl:mr-0 rtl:ml-2" />
+                          {t.services.requestService}
+                        </Button>
                       </div>
                     </div>
                   </Card>
@@ -119,6 +135,25 @@ export function ServicesPage() {
           </div>
         </div>
       </section>
+
+      {/* Sticky Request Service Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          size="lg"
+          onClick={() => handleRequestService()}
+          className="shadow-lg shadow-primary/25 h-14 px-6 rounded-full cursor-pointer"
+        >
+          <HeadphonesIcon className="h-5 w-5 mr-2 rtl:mr-0 rtl:ml-2" />
+          {t.services.requestService}
+        </Button>
+      </div>
+
+      {/* Service Request Modal */}
+      <ServiceRequestModal
+        isOpen={showServiceRequest}
+        onClose={() => setShowServiceRequest(false)}
+        preselectedServiceId={preselectedServiceId}
+      />
     </>
   );
 }

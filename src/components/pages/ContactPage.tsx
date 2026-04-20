@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send, Loader2 } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageCircle, Send, Loader2, HeadphonesIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,11 +13,13 @@ import { getTranslations } from '@/lib/i18n';
 import { COMPANY } from '@/lib/constants';
 import { getGoogleMapsEmbedUrl } from '@/lib/helpers';
 import { useSiteSettings } from '@/hooks/use-site-settings';
+import { ServiceRequestModal } from '@/components/shared/ServiceRequestModal';
 
 export function ContactPage() {
   const { locale, setCurrentPage } = useAppStore();
   const t = getTranslations(locale);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showServiceRequest, setShowServiceRequest] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -209,24 +211,37 @@ export function ContactPage() {
                         disabled={isSubmitting}
                       />
                     </div>
-                    <Button
-                      type="submit"
-                      size="lg"
-                      disabled={isSubmitting}
-                      className="w-full cursor-pointer"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {t.common.loading}
-                        </>
-                      ) : (
-                        <>
-                          <Send className="mr-2 h-4 w-4 rtl:mr-0 rtl:ml-2 rtl:rotate-180" />
-                          {t.contact.submit}
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button
+                        type="submit"
+                        size="lg"
+                        disabled={isSubmitting}
+                        className="flex-1 cursor-pointer"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            {t.common.loading}
+                          </>
+                        ) : (
+                          <>
+                            <Send className="mr-2 h-4 w-4 rtl:mr-0 rtl:ml-2 rtl:rotate-180" />
+                            {t.contact.submit}
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        type="button"
+                        size="lg"
+                        variant="outline"
+                        disabled={isSubmitting}
+                        onClick={() => setShowServiceRequest(true)}
+                        className="flex-1 cursor-pointer"
+                      >
+                        <HeadphonesIcon className="mr-2 h-4 w-4 rtl:mr-0 rtl:ml-2" />
+                        {t.services.requestService}
+                      </Button>
+                    </div>
                   </form>
                 </CardContent>
               </Card>
@@ -234,6 +249,11 @@ export function ContactPage() {
           </div>
         </div>
       </section>
+
+      <ServiceRequestModal
+        isOpen={showServiceRequest}
+        onClose={() => setShowServiceRequest(false)}
+      />
     </>
   );
 }
