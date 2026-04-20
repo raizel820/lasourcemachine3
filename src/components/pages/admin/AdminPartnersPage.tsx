@@ -213,7 +213,7 @@ export function AdminPartnersPage() {
                     <TableRow key={item.id}>
                       <TableCell>
                         {item.logo ? (
-                          <img src={item.logo} alt={item.name} className="h-10 w-16 rounded object-contain bg-white p-1" />
+                          <img src={item.logo} alt={item.name} className="h-10 w-16 rounded object-contain bg-white dark:bg-slate-800 p-1" />
                         ) : (
                           <div className="h-10 w-16 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
                             No logo

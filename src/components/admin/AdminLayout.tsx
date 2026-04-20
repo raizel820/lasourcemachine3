@@ -14,6 +14,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Shield } from 'lucide-react';
+import { ThemeToggle } from '@/components/shared/ThemeToggle';
 
 const PATH_TITLES: Record<string, string> = {
   '/eurl/lasource/dashboard': 'Dashboard',
@@ -36,7 +37,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       <AdminSidebar />
       <SidebarInset>
         {/* Top bar */}
-        <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-white px-4">
+        <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <Breadcrumb>
@@ -59,15 +60,16 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             </BreadcrumbList>
           </Breadcrumb>
           <div className="ml-auto flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+            <ThemeToggle />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-semibold">
               A
             </div>
-            <span className="text-sm font-medium text-slate-700 hidden sm:inline">Admin</span>
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300 hidden sm:inline">Admin</span>
           </div>
         </header>
 
         {/* Main content */}
-        <div className="flex-1 overflow-auto bg-slate-50 p-4 md:p-6">
+        <div className="flex-1 overflow-auto bg-muted/40 p-4 md:p-6">
           {children}
         </div>
       </SidebarInset>

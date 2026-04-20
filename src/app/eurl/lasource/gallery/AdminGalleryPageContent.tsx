@@ -57,14 +57,14 @@ const SOURCE_LABELS: Record<string, string> = {
 };
 
 const SOURCE_COLORS: Record<string, string> = {
-  disk: 'bg-blue-100 text-blue-700 border-blue-200',
-  machine: 'bg-green-100 text-green-700 border-green-200',
-  'production-line': 'bg-purple-100 text-purple-700 border-purple-200',
-  news: 'bg-amber-100 text-amber-700 border-amber-200',
-  project: 'bg-cyan-100 text-cyan-700 border-cyan-200',
-  service: 'bg-pink-100 text-pink-700 border-pink-200',
-  partner: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-  settings: 'bg-red-100 text-red-700 border-red-200',
+  disk: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-800',
+  machine: 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800',
+  'production-line': 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/50 dark:text-purple-300 dark:border-purple-800',
+  news: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-800',
+  project: 'bg-cyan-100 text-cyan-700 border-cyan-200 dark:bg-cyan-900/50 dark:text-cyan-300 dark:border-cyan-800',
+  service: 'bg-pink-100 text-pink-700 border-pink-200 dark:bg-pink-900/50 dark:text-pink-300 dark:border-pink-800',
+  partner: 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-800',
+  settings: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-800',
 };
 
 const ITEMS_PER_PAGE = 24;
@@ -279,25 +279,25 @@ export default function AdminGalleryPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card className="border-dashed">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600"><HardDrive className="h-4 w-4" /></div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600"><HardDrive className="h-4 w-4" /></div>
             <div><p className="text-lg font-bold">{stats.total}</p><p className="text-xs text-muted-foreground">Total Files</p></div>
           </CardContent>
         </Card>
         <Card className="border-dashed">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-50 text-green-600"><ImageIcon className="h-4 w-4" /></div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-50 dark:bg-green-950 text-green-600"><ImageIcon className="h-4 w-4" /></div>
             <div><p className="text-lg font-bold">{stats.images}</p><p className="text-xs text-muted-foreground">Images</p></div>
           </CardContent>
         </Card>
         <Card className="border-dashed">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-600"><FileText className="h-4 w-4" /></div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 dark:bg-orange-950 text-orange-600"><FileText className="h-4 w-4" /></div>
             <div><p className="text-lg font-bold">{stats.documents}</p><p className="text-xs text-muted-foreground">Documents</p></div>
           </CardContent>
         </Card>
         <Card className="border-dashed">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50 text-purple-600"><Database className="h-4 w-4" /></div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-950 text-purple-600"><Database className="h-4 w-4" /></div>
             <div><p className="text-lg font-bold">{stats.sourceCounts ? Object.keys(stats.sourceCounts).length : 0}</p><p className="text-xs text-muted-foreground">Sources</p></div>
           </CardContent>
         </Card>
@@ -422,13 +422,13 @@ export default function AdminGalleryPage() {
                     )}
 
                     {/* Source badge */}
-                    <Badge className={`absolute top-2 right-2 text-[10px] px-1.5 py-0 h-4 border ${SOURCE_COLORS[file.source] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
+                    <Badge className={`absolute top-2 right-2 text-[10px] px-1.5 py-0 h-4 border ${SOURCE_COLORS[file.source] || 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'}`}>
                       {SOURCE_LABELS[file.source] || file.source}
                     </Badge>
 
                     {/* External badge */}
                     {file.isExternal && (
-                      <Badge className="absolute bottom-2 left-2 text-[10px] px-1.5 py-0 h-4 bg-yellow-100 text-yellow-700 border-yellow-200">
+                      <Badge className="absolute bottom-2 left-2 text-[10px] px-1.5 py-0 h-4 bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-800">
                         <Globe className="h-2.5 w-2.5 mr-0.5" />External
                       </Badge>
                     )}
@@ -436,9 +436,9 @@ export default function AdminGalleryPage() {
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                       {file.type === 'image' && (
-                        <Tooltip><TooltipTrigger asChild><button onClick={(e) => { e.stopPropagation(); setPreviewFile(file); }} className="h-8 w-8 rounded-full bg-white/90 text-gray-800 flex items-center justify-center cursor-pointer hover:bg-white"><ZoomIn className="h-4 w-4" /></button></TooltipTrigger><TooltipContent>Preview</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><button onClick={(e) => { e.stopPropagation(); setPreviewFile(file); }} className="h-8 w-8 rounded-full bg-white/90 text-gray-800 dark:bg-slate-800/90 dark:text-slate-200 flex items-center justify-center cursor-pointer hover:bg-white dark:hover:bg-slate-700"><ZoomIn className="h-4 w-4" /></button></TooltipTrigger><TooltipContent>Preview</TooltipContent></Tooltip>
                       )}
-                      <Tooltip><TooltipTrigger asChild><button onClick={(e) => { e.stopPropagation(); handleCopyUrl(file.url); }} className="h-8 w-8 rounded-full bg-white/90 text-gray-800 flex items-center justify-center cursor-pointer hover:bg-white">{copiedUrl === file.url ? <CheckSquare className="h-4 w-4 text-green-600" /> : <Download className="h-4 w-4" />}</button></TooltipTrigger><TooltipContent>{copiedUrl === file.url ? 'Copied!' : 'Copy URL'}</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild><button onClick={(e) => { e.stopPropagation(); handleCopyUrl(file.url); }} className="h-8 w-8 rounded-full bg-white/90 text-gray-800 dark:bg-slate-800/90 dark:text-slate-200 flex items-center justify-center cursor-pointer hover:bg-white dark:hover:bg-slate-700">{copiedUrl === file.url ? <CheckSquare className="h-4 w-4 text-green-600" /> : <Download className="h-4 w-4" />}</button></TooltipTrigger><TooltipContent>{copiedUrl === file.url ? 'Copied!' : 'Copy URL'}</TooltipContent></Tooltip>
                       {!file.isExternal && (
                         <Tooltip><TooltipTrigger asChild><button onClick={(e) => { e.stopPropagation(); setDeleteTarget({ urls: [file.url], names: [file.sourceLabel], hasExternal: false }); }} className="h-8 w-8 rounded-full bg-red-500/90 text-white flex items-center justify-center cursor-pointer hover:bg-red-600"><Trash2 className="h-4 w-4" /></button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>
                       )}
@@ -486,7 +486,7 @@ export default function AdminGalleryPage() {
                       {file.isExternal && <span className="text-[10px] text-yellow-600 flex items-center gap-0.5"><Globe className="h-2.5 w-2.5" />External</span>}
                     </div>
                   </div>
-                  <div className="col-span-3 min-w-0"><Badge className={`text-[10px] px-1.5 py-0 h-4 border ${SOURCE_COLORS[file.source] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>{file.sourceLabel}</Badge></div>
+                  <div className="col-span-3 min-w-0"><Badge className={`text-[10px] px-1.5 py-0 h-4 border ${SOURCE_COLORS[file.source] || 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'}`}>{file.sourceLabel}</Badge></div>
                   <div className="col-span-1 text-xs text-muted-foreground capitalize">{file.type}</div>
                   <div className="col-span-1 text-xs text-muted-foreground">{file.sizeFormatted}</div>
                   <div className="col-span-2 text-xs text-muted-foreground">{formatDate(file.lastModified)}</div>
@@ -525,7 +525,7 @@ export default function AdminGalleryPage() {
                 <DialogTitle className="text-sm font-medium truncate">{previewFile.fileName}</DialogTitle>
                 <DialogDescription className="text-xs">
                   <Badge className={`text-[10px] px-1.5 py-0 h-4 border mr-1.5 ${SOURCE_COLORS[previewFile.source] || ''}`}>{previewFile.sourceLabel}</Badge>
-                  {previewFile.isExternal && <Badge className="text-[10px] px-1.5 py-0 h-4 bg-yellow-100 text-yellow-700 border-yellow-200"><Globe className="h-2.5 w-2.5 mr-0.5" />External URL</Badge>}
+                  {previewFile.isExternal && <Badge className="text-[10px] px-1.5 py-0 h-4 bg-yellow-100 text-yellow-700 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-800"><Globe className="h-2.5 w-2.5 mr-0.5" />External URL</Badge>}
                   {!previewFile.isExternal && <span className="ml-1">&middot; {previewFile.sizeFormatted}</span>}
                 </DialogDescription>
               </DialogHeader>

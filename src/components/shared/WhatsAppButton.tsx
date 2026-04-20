@@ -28,7 +28,7 @@ export function WhatsAppButton() {
       {/* Tooltip */}
       <span
         className={cn(
-          'rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-gray-800 shadow-lg',
+          'rounded-lg bg-white dark:bg-slate-800 px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-slate-200 shadow-lg',
           'opacity-0 transition-all duration-300',
           'group-hover:opacity-100',
           isRTL ? 'mr-3' : 'ml-3',

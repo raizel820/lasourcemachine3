@@ -53,17 +53,17 @@ export function AdminLogin() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-slate-100 p-4">
-      <Card className="w-full max-w-md shadow-lg border-slate-200">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-slate-100 dark:from-blue-950 dark:via-slate-950 dark:to-slate-900 p-4">
+      <Card className="w-full max-w-md shadow-lg border-slate-200 dark:border-slate-700">
         <CardHeader className="text-center space-y-4 pb-2">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md">
             <Factory className="h-7 w-7" />
           </div>
           <div>
-            <CardTitle className="text-xl font-bold text-slate-900">
+            <CardTitle className="text-xl font-bold text-slate-900 dark:text-slate-100">
               {COMPANY.name}
             </CardTitle>
-            <CardDescription className="text-sm text-slate-500 mt-1">
+            <CardDescription className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Admin Panel — Sign in to manage your website
             </CardDescription>
           </div>
@@ -71,11 +71,11 @@ export function AdminLogin() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm font-medium text-slate-700">
+              <Label htmlFor="username" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 Username
               </Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <Input
                   id="username"
                   type="text"
@@ -90,11 +90,11 @@ export function AdminLogin() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-slate-700">
+              <Label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -108,7 +108,7 @@ export function AdminLogin() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? (

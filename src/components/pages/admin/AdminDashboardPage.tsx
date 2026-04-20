@@ -168,8 +168,8 @@ export function AdminDashboardPage() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Overview of your website content and activity.
         </p>
       </div>
@@ -185,10 +185,10 @@ export function AdminDashboardPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                     {card.title}
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-slate-900">
+                  <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">
                     {card.value}
                   </p>
                 </div>
@@ -245,8 +245,8 @@ export function AdminDashboardPage() {
                       <TableRow key={lead.id}>
                         <TableCell className="text-xs font-medium">
                           <div>
-                            <p className="font-medium text-slate-900">{lead.name}</p>
-                            <p className="text-slate-500 text-[11px]">{lead.email}</p>
+                            <p className="font-medium text-slate-900 dark:text-slate-100">{lead.name}</p>
+                            <p className="text-slate-500 dark:text-slate-400 text-[11px]">{lead.email}</p>
                           </div>
                         </TableCell>
                         <TableCell className="text-xs hidden sm:table-cell max-w-[150px] truncate">
