@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SectionHeader } from '@/components/shared/SectionHeader';
 import { RequestQuoteModal } from '@/components/shared/RequestQuoteModal';
-import { ServiceRequestModal } from '@/components/shared/ServiceRequestModal';
 import { useAppStore } from '@/lib/store';
 import { getTranslations } from '@/lib/i18n';
 import { useSiteSettings } from '@/hooks/use-site-settings';
@@ -78,7 +77,6 @@ export function HomePage() {
   const site = useSiteSettings();
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [quoteMachine, setQuoteMachine] = useState<{ name: string; id: string } | null>(null);
-  const [serviceRequestOpen, setServiceRequestOpen] = useState(false);
 
   // Data states
   const [machines, setMachines] = useState<AnyRecord[]>([]);
@@ -316,14 +314,11 @@ export function HomePage() {
               </div>
             )}
           </div>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button variant="outline" size="lg" onClick={() => setCurrentPage('services')} className="cursor-pointer">
-              {t.services.title}
-              <ArrowRight className="ml-2 h-4 w-4 rtl:rotate-180 rtl:ml-0 rtl:mr-2" />
-            </Button>
-            <Button size="lg" onClick={() => setServiceRequestOpen(true)} className="cursor-pointer">
+          <div className="mt-10 text-center">
+            <Button size="lg" onClick={() => setCurrentPage('service-request')} className="cursor-pointer">
               <HeadphonesIcon className="h-4 w-4 mr-2 rtl:mr-0 rtl:ml-2" />
               {t.services.requestService}
+              <ArrowRight className="ml-2 h-4 w-4 rtl:rotate-180 rtl:ml-0 rtl:mr-2" />
             </Button>
           </div>
         </div>
@@ -439,11 +434,6 @@ export function HomePage() {
         onClose={() => { setQuoteOpen(false); setQuoteMachine(null); }}
         machineName={quoteMachine?.name}
         machineId={quoteMachine?.id}
-      />
-
-      <ServiceRequestModal
-        isOpen={serviceRequestOpen}
-        onClose={() => setServiceRequestOpen(false)}
       />
     </>
   );

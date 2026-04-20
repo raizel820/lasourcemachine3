@@ -716,3 +716,29 @@ Stage Summary:
 - Dev server running on port 3000, accessible via Caddy on port 81
 - Admin panel at /eurl/lasource/dashboard (credentials: admin/admin123)
 - All features operational: i18n (EN/FR/AR), currency conversion, image upload, full CRUD admin panel
+
+---
+Task ID: 11
+Agent: Main Agent
+Task: Convert service request from modal to full page, replace Services nav link with Request a Service
+
+Work Log:
+- Created `ServiceRequestPage.tsx` as a full standalone page with 4-step form layout (Customer Info → Service Selection → Machines → Notes)
+- Added success state with "Back to Home" and "New Request" buttons after form submission
+- Added machine search filter for the catalog machine list
+- Updated i18n translations (EN/FR/AR): added `requestService` to nav section
+- Updated `Navbar.tsx`: replaced `{ key: 'services', page: 'services' }` with `{ key: 'requestService', page: 'service-request' }`
+- Updated `Footer.tsx`: replaced services link with requestService link to service-request page
+- Updated `page.tsx` router: removed ServicesPage import, added ServiceRequestPage, mapped 'service-request' case
+- Updated `HomePage.tsx`: removed ServiceRequestModal import/usage, removed "view all services" button, changed "Request a Service" button to navigate to service-request page
+- Updated `ContactPage.tsx`: removed ServiceRequestModal import/usage, changed "Request a Service" button to navigate to service-request page
+- Fixed duplicate `const site = useSiteSettings()` in ContactPage.tsx
+- Services section remains on HomePage as a display-only section (no separate page)
+
+Stage Summary:
+- "Request a Service" is now a full dedicated page at /service-request with a clean multi-step form
+- Navigation header and footer now show "Request a Service" / "Demander un Service" / "اطلب خدمة" instead of "Services"
+- Services are only displayed as a section on the home page (no separate services page)
+- The modal-based approach has been fully replaced with page navigation
+- All trilingual support (EN/FR/AR) maintained throughout
+- Lint passes cleanly, dev server compiles successfully

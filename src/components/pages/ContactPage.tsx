@@ -13,13 +13,12 @@ import { getTranslations } from '@/lib/i18n';
 import { COMPANY } from '@/lib/constants';
 import { getGoogleMapsEmbedUrl } from '@/lib/helpers';
 import { useSiteSettings } from '@/hooks/use-site-settings';
-import { ServiceRequestModal } from '@/components/shared/ServiceRequestModal';
 
 export function ContactPage() {
   const { locale, setCurrentPage } = useAppStore();
   const t = getTranslations(locale);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showServiceRequest, setShowServiceRequest] = useState(false);
+  const site = useSiteSettings();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -56,8 +55,6 @@ export function ContactPage() {
       setIsSubmitting(false);
     }
   };
-
-  const site = useSiteSettings();
 
   const contactInfo = [
     { icon: Phone, label: locale === 'ar' ? 'الهاتف' : locale === 'fr' ? 'Téléphone' : 'Phone', value: site.phone, href: `tel:${site.phone}` },
@@ -235,7 +232,7 @@ export function ContactPage() {
                         size="lg"
                         variant="outline"
                         disabled={isSubmitting}
-                        onClick={() => setShowServiceRequest(true)}
+                        onClick={() => setCurrentPage('service-request')}
                         className="flex-1 cursor-pointer"
                       >
                         <HeadphonesIcon className="mr-2 h-4 w-4 rtl:mr-0 rtl:ml-2" />
@@ -250,10 +247,6 @@ export function ContactPage() {
         </div>
       </section>
 
-      <ServiceRequestModal
-        isOpen={showServiceRequest}
-        onClose={() => setShowServiceRequest(false)}
-      />
     </>
   );
 }

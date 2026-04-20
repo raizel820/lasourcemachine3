@@ -32,7 +32,7 @@ const NAV_LINKS = [
   { key: 'home', page: 'home' },
   { key: 'machines', page: 'machines' },
   { key: 'productionLines', page: 'production-lines' },
-  { key: 'services', page: 'services' },
+  { key: 'requestService', page: 'service-request' },
   { key: 'projects', page: 'projects' },
   { key: 'news', page: 'news' },
   { key: 'faq', page: 'faq' },
